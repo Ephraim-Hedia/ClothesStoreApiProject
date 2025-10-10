@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <Folder Include="Specification\ProductSpecification\CategorySpecs\" />
+    <Folder Include="Specification\ProductSpecification\SubcategorySpecs\" />
   </ItemGroup>
 
 </Project>

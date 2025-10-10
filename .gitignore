@@ -3,3 +3,34 @@
 ################################################################################
 
 /.vs
+# =========================
+# Visual Studio / .NET ignore rules
+# =========================
+
+# User-specific files
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio folders
+.vscode/
+
+# Build results for all projects
+ClothesStoreApi/bin/
+ClothesStoreApi/obj/
+
+Store.Data/bin/
+Store.Data/obj/
+
+Store.Repositories/bin/
+Store.Repositories/obj/
+
+Store.Services/bin/
+Store.Services/obj/
+
+
+
+
+
