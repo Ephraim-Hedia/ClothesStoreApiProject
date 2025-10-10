@@ -1,0 +1,14 @@
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Data\bin\Debug\net8.0\Store.Data.deps.json
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Data\bin\Debug\net8.0\Store.Data.dll
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Data\bin\Debug\net8.0\Store.Data.pdb
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Data\obj\Debug\net8.0\Store.Data.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Data\obj\Debug\net8.0\Store.Data.AssemblyInfoInputs.cache
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Data\obj\Debug\net8.0\Store.Data.AssemblyInfo.cs
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Data\obj\Debug\net8.0\Store.Data.csproj.CoreCompileInputs.cache
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Data\obj\Debug\net8.0\Store.Data.dll
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Data\obj\Debug\net8.0\refint\Store.Data.dll
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Data\obj\Debug\net8.0\Store.Data.pdb
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Data\obj\Debug\net8.0\ref\Store.Data.dll
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Data\bin\Debug\net8.0\Store.Data.runtimeconfig.json
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Data\obj\Debug\net8.0\Store.Data.csproj.AssemblyReference.cache
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Data\obj\Debug\net8.0\Store.Data.genruntimeconfig.cache

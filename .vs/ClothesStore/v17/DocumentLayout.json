@@ -1,0 +1,139 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Guirguis\\source\\repos\\ClothesStore\\ClothesStore\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{66FAA45D-0718-4A66-BC84-F449A404CF14}|Store.Services\\Store.Services.csproj|c:\\users\\guirguis\\source\\repos\\clothesstore\\clothesstore\\store.services\\services\\discountservice\\discountservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66FAA45D-0718-4A66-BC84-F449A404CF14}|Store.Services\\Store.Services.csproj|solutionrelative:store.services\\services\\discountservice\\discountservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66FAA45D-0718-4A66-BC84-F449A404CF14}|Store.Services\\Store.Services.csproj|c:\\users\\guirguis\\source\\repos\\clothesstore\\clothesstore\\store.services\\services\\subcategoryservice\\subcategoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66FAA45D-0718-4A66-BC84-F449A404CF14}|Store.Services\\Store.Services.csproj|solutionrelative:store.services\\services\\subcategoryservice\\subcategoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66FAA45D-0718-4A66-BC84-F449A404CF14}|Store.Services\\Store.Services.csproj|c:\\users\\guirguis\\source\\repos\\clothesstore\\clothesstore\\store.services\\services\\discountservice\\idiscountservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66FAA45D-0718-4A66-BC84-F449A404CF14}|Store.Services\\Store.Services.csproj|solutionrelative:store.services\\services\\discountservice\\idiscountservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66FAA45D-0718-4A66-BC84-F449A404CF14}|Store.Services\\Store.Services.csproj|c:\\users\\guirguis\\source\\repos\\clothesstore\\clothesstore\\store.services\\services\\discountservice\\dtos\\discountprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66FAA45D-0718-4A66-BC84-F449A404CF14}|Store.Services\\Store.Services.csproj|solutionrelative:store.services\\services\\discountservice\\dtos\\discountprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66FAA45D-0718-4A66-BC84-F449A404CF14}|Store.Services\\Store.Services.csproj|c:\\users\\guirguis\\source\\repos\\clothesstore\\clothesstore\\store.services\\services\\discountservice\\dtos\\discountupdatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66FAA45D-0718-4A66-BC84-F449A404CF14}|Store.Services\\Store.Services.csproj|solutionrelative:store.services\\services\\discountservice\\dtos\\discountupdatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66FAA45D-0718-4A66-BC84-F449A404CF14}|Store.Services\\Store.Services.csproj|c:\\users\\guirguis\\source\\repos\\clothesstore\\clothesstore\\store.services\\services\\discountservice\\dtos\\discountresultdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66FAA45D-0718-4A66-BC84-F449A404CF14}|Store.Services\\Store.Services.csproj|solutionrelative:store.services\\services\\discountservice\\dtos\\discountresultdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66FAA45D-0718-4A66-BC84-F449A404CF14}|Store.Services\\Store.Services.csproj|c:\\users\\guirguis\\source\\repos\\clothesstore\\clothesstore\\store.services\\services\\discountservice\\dtos\\discountcreatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66FAA45D-0718-4A66-BC84-F449A404CF14}|Store.Services\\Store.Services.csproj|solutionrelative:store.services\\services\\discountservice\\dtos\\discountcreatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "SubcategoryService.cs",
+              "DocumentMoniker": "C:\\Users\\Guirguis\\source\\repos\\ClothesStore\\ClothesStore\\Store.Services\\Services\\SubcategoryService\\SubcategoryService.cs",
+              "RelativeDocumentMoniker": "Store.Services\\Services\\SubcategoryService\\SubcategoryService.cs",
+              "ToolTip": "C:\\Users\\Guirguis\\source\\repos\\ClothesStore\\ClothesStore\\Store.Services\\Services\\SubcategoryService\\SubcategoryService.cs",
+              "RelativeToolTip": "Store.Services\\Services\\SubcategoryService\\SubcategoryService.cs",
+              "ViewState": "AgIAAEsAAAAAAAAAAAAowFoAAABGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-08T13:51:55.03Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "DiscountService.cs",
+              "DocumentMoniker": "C:\\Users\\Guirguis\\source\\repos\\ClothesStore\\ClothesStore\\Store.Services\\Services\\DiscountService\\DiscountService.cs",
+              "RelativeDocumentMoniker": "Store.Services\\Services\\DiscountService\\DiscountService.cs",
+              "ToolTip": "C:\\Users\\Guirguis\\source\\repos\\ClothesStore\\ClothesStore\\Store.Services\\Services\\DiscountService\\DiscountService.cs",
+              "RelativeToolTip": "Store.Services\\Services\\DiscountService\\DiscountService.cs",
+              "ViewState": "AgIAAD8AAACAmZmZmZkdwEQAAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-08T13:47:46.791Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "IDiscountService.cs",
+              "DocumentMoniker": "C:\\Users\\Guirguis\\source\\repos\\ClothesStore\\ClothesStore\\Store.Services\\Services\\DiscountService\\IDiscountService.cs",
+              "RelativeDocumentMoniker": "Store.Services\\Services\\DiscountService\\IDiscountService.cs",
+              "ToolTip": "C:\\Users\\Guirguis\\source\\repos\\ClothesStore\\ClothesStore\\Store.Services\\Services\\DiscountService\\IDiscountService.cs",
+              "RelativeToolTip": "Store.Services\\Services\\DiscountService\\IDiscountService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAABrAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-08T13:47:30.059Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "DiscountProfile.cs",
+              "DocumentMoniker": "C:\\Users\\Guirguis\\source\\repos\\ClothesStore\\ClothesStore\\Store.Services\\Services\\DiscountService\\Dtos\\DiscountProfile.cs",
+              "RelativeDocumentMoniker": "Store.Services\\Services\\DiscountService\\Dtos\\DiscountProfile.cs",
+              "ToolTip": "C:\\Users\\Guirguis\\source\\repos\\ClothesStore\\ClothesStore\\Store.Services\\Services\\DiscountService\\Dtos\\DiscountProfile.cs",
+              "RelativeToolTip": "Store.Services\\Services\\DiscountService\\Dtos\\DiscountProfile.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-08T13:42:18.485Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "DiscountUpdateDto.cs",
+              "DocumentMoniker": "C:\\Users\\Guirguis\\source\\repos\\ClothesStore\\ClothesStore\\Store.Services\\Services\\DiscountService\\Dtos\\DiscountUpdateDto.cs",
+              "RelativeDocumentMoniker": "Store.Services\\Services\\DiscountService\\Dtos\\DiscountUpdateDto.cs",
+              "ToolTip": "C:\\Users\\Guirguis\\source\\repos\\ClothesStore\\ClothesStore\\Store.Services\\Services\\DiscountService\\Dtos\\DiscountUpdateDto.cs",
+              "RelativeToolTip": "Store.Services\\Services\\DiscountService\\Dtos\\DiscountUpdateDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-08T13:42:04.694Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "DiscountResultDto.cs",
+              "DocumentMoniker": "C:\\Users\\Guirguis\\source\\repos\\ClothesStore\\ClothesStore\\Store.Services\\Services\\DiscountService\\Dtos\\DiscountResultDto.cs",
+              "RelativeDocumentMoniker": "Store.Services\\Services\\DiscountService\\Dtos\\DiscountResultDto.cs",
+              "ToolTip": "C:\\Users\\Guirguis\\source\\repos\\ClothesStore\\ClothesStore\\Store.Services\\Services\\DiscountService\\Dtos\\DiscountResultDto.cs",
+              "RelativeToolTip": "Store.Services\\Services\\DiscountService\\Dtos\\DiscountResultDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-08T13:41:56.469Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "DiscountCreateDto.cs",
+              "DocumentMoniker": "C:\\Users\\Guirguis\\source\\repos\\ClothesStore\\ClothesStore\\Store.Services\\Services\\DiscountService\\Dtos\\DiscountCreateDto.cs",
+              "RelativeDocumentMoniker": "Store.Services\\Services\\DiscountService\\Dtos\\DiscountCreateDto.cs",
+              "ToolTip": "C:\\Users\\Guirguis\\source\\repos\\ClothesStore\\ClothesStore\\Store.Services\\Services\\DiscountService\\Dtos\\DiscountCreateDto.cs",
+              "RelativeToolTip": "Store.Services\\Services\\DiscountService\\Dtos\\DiscountCreateDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-08T13:41:25.06Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

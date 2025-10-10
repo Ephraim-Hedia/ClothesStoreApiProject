@@ -1,0 +1,17 @@
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Services\bin\Debug\net8.0\Store.Services.deps.json
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Services\bin\Debug\net8.0\Store.Services.dll
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Services\bin\Debug\net8.0\Store.Services.pdb
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Services\obj\Debug\net8.0\Store.Services.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Services\obj\Debug\net8.0\Store.Services.AssemblyInfoInputs.cache
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Services\obj\Debug\net8.0\Store.Services.AssemblyInfo.cs
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Services\obj\Debug\net8.0\Store.Services.csproj.CoreCompileInputs.cache
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Services\obj\Debug\net8.0\Store.Services.dll
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Services\obj\Debug\net8.0\refint\Store.Services.dll
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Services\obj\Debug\net8.0\Store.Services.pdb
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Services\obj\Debug\net8.0\ref\Store.Services.dll
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Services\bin\Debug\net8.0\Store.Data.dll
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Services\bin\Debug\net8.0\Store.Repositories.dll
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Services\bin\Debug\net8.0\Store.Repositories.pdb
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Services\bin\Debug\net8.0\Store.Data.pdb
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Services\obj\Debug\net8.0\Store.Services.csproj.AssemblyReference.cache
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Services\obj\Debug\net8.0\Store.Se.9385C541.Up2Date

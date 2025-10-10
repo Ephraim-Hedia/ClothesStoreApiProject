@@ -1,0 +1,15 @@
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Repositories\bin\Debug\net8.0\Store.Repositories.deps.json
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Repositories\bin\Debug\net8.0\Store.Repositories.dll
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Repositories\bin\Debug\net8.0\Store.Repositories.pdb
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Repositories\bin\Debug\net8.0\Store.Data.dll
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Repositories\bin\Debug\net8.0\Store.Data.pdb
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Repositories\obj\Debug\net8.0\Store.Repositories.csproj.AssemblyReference.cache
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Repositories\obj\Debug\net8.0\Store.Repositories.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Repositories\obj\Debug\net8.0\Store.Repositories.AssemblyInfoInputs.cache
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Repositories\obj\Debug\net8.0\Store.Repositories.AssemblyInfo.cs
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Repositories\obj\Debug\net8.0\Store.Repositories.csproj.CoreCompileInputs.cache
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Repositories\obj\Debug\net8.0\Store.Re.07F01F29.Up2Date
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Repositories\obj\Debug\net8.0\Store.Repositories.dll
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Repositories\obj\Debug\net8.0\refint\Store.Repositories.dll
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Repositories\obj\Debug\net8.0\Store.Repositories.pdb
+C:\Users\Guirguis\source\repos\ClothesStore\ClothesStore\Store.Repositories\obj\Debug\net8.0\ref\Store.Repositories.dll
