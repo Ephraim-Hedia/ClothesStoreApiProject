@@ -46,7 +46,7 @@ namespace Store.Services.Services.DiscountService
             }
             catch (Exception err)
             {
-                _logger.LogError(err.Message);
+                // add logger here 
                 throw;
             }
    
