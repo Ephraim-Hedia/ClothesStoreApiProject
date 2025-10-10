@@ -18,21 +18,19 @@
 .vscode/
 
 # Build results for all projects
-ClothesStoreApi/bin/
-ClothesStoreApi/obj/
+/ClothesStoreApi/bin/
+/ClothesStoreApi/obj/
 
-Store.Data/bin/
-Store.Data/obj/
+/Store.Data/bin/
+/Store.Data/obj/
 
-Store.Repositories/bin/
-Store.Repositories/obj/
+/Store.Repositories/bin/
+/Store.Repositories/obj/
 
-Store.Services/bin/
-Store.Services/obj/
-
-
+/Store.Services/bin/
+/Store.Services/obj/
 
 
 
-/Store.Repositories/obj/Debug/net8.0/Store.Repositories.AssemblyInfo.cs
-/Store.Repositories/obj/Debug/net8.0/Store.Repositories.AssemblyInfoInputs.cache
+
+
