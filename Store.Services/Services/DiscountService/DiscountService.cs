@@ -75,9 +75,22 @@ namespace Store.Services.Services.DiscountService
             }
         }
 
-        public Task<CommonResponse<IReadOnlyList<DiscountResultDto>>> GetAllDiscountAsync()
+        public async Task<CommonResponse<IReadOnlyList<DiscountResultDto>>> GetAllDiscountAsync()
         {
-            throw new NotImplementedException();
+            var response = new CommonResponse<IReadOnlyList<DiscountResultDto>>();
+            try
+            {
+                var discounts = await _unitOfWork.Repository<Discount, int>().GetAllAsync();
+                if (discounts.Any())
+                    return response.Fail("404", "No Discounts Found");
+                var mappedDiscounts = _mapper.Map<IReadOnlyList<DiscountResultDto>>(discounts);
+                return response.Success(mappedDiscounts);
+            }
+            catch (Exception err)
+            {
+                _logger.LogError(err.Message);
+                throw;
+            }
         }
 
         public Task<CommonResponse<DiscountResultDto>> GetDiscountByIdAsync(int discountId)
