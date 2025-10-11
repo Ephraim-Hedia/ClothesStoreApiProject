@@ -2,6 +2,8 @@
 using Store.Repositories.Repositories;
 using Store.Services.Services.CategoriesService;
 using Store.Services.Services.CategoriesService.Dtos;
+using Store.Services.Services.DiscountService;
+using Store.Services.Services.DiscountService.Dtos;
 using Store.Services.Services.ProductColorService;
 using Store.Services.Services.ProductColorService.Dtos;
 using Store.Services.Services.ProductService;
@@ -23,6 +25,8 @@ namespace Store.Api.Extensions
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ISubcategoryService, SubcategoryService>();
+            services.AddScoped<IDiscountService, DiscountService>();
+
 
 
             services.AddAutoMapper(typeof(ProductProfile));
@@ -30,6 +34,8 @@ namespace Store.Api.Extensions
             services.AddAutoMapper(typeof(SizeProfile));
             services.AddAutoMapper(typeof(CategoryProfile));
             services.AddAutoMapper(typeof(SubcategoryProfile));
+            services.AddAutoMapper(typeof(DiscountProfile));
+
 
             return services;
         }
