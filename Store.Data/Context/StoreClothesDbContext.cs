@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Store.Data.Entities;
+using Store.Data.Entities.ProductEntities;
 using System.Reflection;
 using System.Reflection.Emit;
 

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Store.Data.Entities;
-using System;
+using Store.Data.Entities.ProductEntities;
+
 
 namespace Store.Services.Services.ProductService.Dtos
 {

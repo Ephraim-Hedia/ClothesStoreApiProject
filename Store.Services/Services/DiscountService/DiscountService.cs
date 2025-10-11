@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
-using Store.Data.Entities;
+using Store.Data.Entities.ProductEntities;
 using Store.Data.Migrations;
 using Store.Repositories.Interfaces;
 using Store.Services.HandleResponse.CommonResponse;

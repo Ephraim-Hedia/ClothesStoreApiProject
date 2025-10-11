@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Store.Data.Entities;
+using Store.Data.Entities.ProductEntities;
 
 namespace Store.Data.Configuration.ProductConfiguration
 {
@@ -14,11 +14,6 @@ namespace Store.Data.Configuration.ProductConfiguration
 
             entity.Property(ps => ps.Description)
                 .HasMaxLength(200);
-
-            entity.HasOne(ps => ps.Product)
-                .WithMany(p => p.ProductSizes)
-                .HasForeignKey(ps => ps.ProductId)
-                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

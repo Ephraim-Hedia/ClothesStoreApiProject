@@ -1,7 +1,8 @@
-﻿namespace Store.Repositories.Specification.ProductSpecification.SizeSpecs
+﻿namespace Store.Repositories.Specification.ProductSpecification.CategorySpecs
 {
-    public class SizeSpecsWithParameters
+    public class CategorySpecsParameters
     {
+        public int? DiscountId { get; set; } 
         public string? Sort { get; set; }
         public int PageIndex { get; set; } = 1;
         private const int MAX_PAGE_SIZE = 50;

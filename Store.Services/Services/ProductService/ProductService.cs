@@ -2,7 +2,7 @@
 using Store.Services.Services.ProductService.Dtos;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
-using Store.Data.Entities;
+using Store.Data.Entities.ProductEntities;
 using Store.Repositories.Interfaces;
 
 namespace Store.Services.Services.ProductService

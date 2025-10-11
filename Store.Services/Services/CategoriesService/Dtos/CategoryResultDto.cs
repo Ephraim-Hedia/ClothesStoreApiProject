@@ -1,4 +1,4 @@
-﻿using Store.Data.Entities;
+﻿using Store.Data.Entities.ProductEntities;
 
 namespace Store.Services.Services.CategoriesService.Dtos
 {

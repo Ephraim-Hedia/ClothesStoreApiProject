@@ -1,4 +1,4 @@
-﻿namespace Store.Data.Entities
+﻿namespace Store.Data.Entities.ProductEntities
 {
     public class Subcategory : BaseEntity<int>
     {

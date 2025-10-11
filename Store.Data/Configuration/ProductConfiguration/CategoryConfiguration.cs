@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Store.Data.Entities;
+using Store.Data.Entities.ProductEntities;
 
 namespace Store.Data.Configuration.ProductConfiguration
 {

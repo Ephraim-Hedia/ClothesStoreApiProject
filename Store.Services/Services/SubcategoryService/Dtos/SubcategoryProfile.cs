@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Store.Data.Entities;
+using Store.Data.Entities.ProductEntities;
 
 namespace Store.Services.Services.SubcategoryService.Dtos
 {
