@@ -14,6 +14,7 @@ namespace Store.Repositories.Specification
             }
 
             query = spec.Includes.Aggregate(query, (current, includeExperssion) => current.Include(includeExperssion));
+            query = spec.IncludeStrings.Aggregate(query, (current, include) => current.Include(include));
 
             if (spec.OrderBy != null)
                 query = query.OrderBy(spec.OrderBy);

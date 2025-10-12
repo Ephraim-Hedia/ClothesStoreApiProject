@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using Azure;
 using Microsoft.Extensions.Logging;
 using Store.Data.Entities.ProductEntities;
 using Store.Repositories.Interfaces;
+using Store.Repositories.Specification.ProductSpecification.ProductSpecs;
 using Store.Services.HandleResponse.CommonResponse;
 using Store.Services.Helper.Validation;
 using Store.Services.Services.ProductService.Dtos;
@@ -59,12 +59,12 @@ namespace Store.Services.Services.ProductService
                 return response.Fail("400", "Price must be greater than zero.");
 
             // Validate Colors
-            var colorValidation = await _listValidator.ValidateEntityIdsAsync<ProductColor>(dto.ProductColorIds, "color");
+            var colorValidation = await _listValidator.ValidateEntityIdsAsync<ProductColor>(dto.ProductColorIds);
             if (!colorValidation.IsValid)
                 return response.Fail("400", colorValidation.ErrorMessage);
 
             // Validate Sizes
-            var sizeValidation = await _listValidator.ValidateEntityIdsAsync<ProductSize>(dto.ProductSizeIds, "size");
+            var sizeValidation = await _listValidator.ValidateEntityIdsAsync<ProductSize>(dto.ProductSizeIds);
             if (!sizeValidation.IsValid)
                 return response.Fail("400", sizeValidation.ErrorMessage);
 
@@ -141,8 +141,10 @@ namespace Store.Services.Services.ProductService
 
             try
             {
+                var specsParameters = new ProductSpecsParameters();
+                var specs = new ProductSpecification(specsParameters);
                 var products = await _unitOfWork.Repository<Product, int>()
-                    .GetAllAsync();
+                    .GetAllWithSpecificationAsync(specs);
 
                 if (!products.Any())
                     return response.Fail("404", "No products found");
@@ -222,11 +224,11 @@ namespace Store.Services.Services.ProductService
             }
 
             // Reuse same validator helper for colors & sizes
-            var colorValidation = await _listValidator.ValidateEntityIdsAsync<ProductColor>(dto.ProductColorIds, "color");
+            var colorValidation = await _listValidator.ValidateEntityIdsAsync<ProductColor>(dto.ProductColorIds);
             if (!colorValidation.IsValid)
                 return response.Fail("400", colorValidation.ErrorMessage);
 
-            var sizeValidation = await _listValidator.ValidateEntityIdsAsync<ProductSize>(dto.ProductSizeIds, "size");
+            var sizeValidation = await _listValidator.ValidateEntityIdsAsync<ProductSize>(dto.ProductSizeIds);
             if (!sizeValidation.IsValid)
                 return response.Fail("400", sizeValidation.ErrorMessage);
 

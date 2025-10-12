@@ -11,6 +11,8 @@ namespace Store.Repositories.Specification
         public Expression<Func<T, bool>> Criteria { get; }
         public List<Expression<Func<T, object>>> Includes { get; } = new List<Expression<Func<T, object>>> { };
 
+        public List<string> IncludeStrings { get; } = new List<string>();
+        
         public Expression<Func<T, object>>? OrderBy { get; private set; }
 
         public Expression<Func<T, object>>? OrderByDescending { get; private set; }
@@ -23,7 +25,8 @@ namespace Store.Repositories.Specification
 
         protected void AddInclude(Expression<Func<T, object>> includeExpression)
             => Includes.Add(includeExpression);
-
+        protected void AddInclude(string includeString)
+            => IncludeStrings.Add(includeString);
         protected void AddOrderBy(Expression<Func<T, object>> orderByExpression)
             => OrderBy = orderByExpression;
 

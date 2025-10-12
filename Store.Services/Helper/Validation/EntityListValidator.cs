@@ -13,12 +13,11 @@ namespace Store.Services.Helper.Validation
         }
 
         public async Task<ValidationListResult<T>> ValidateEntityIdsAsync<T>(
-            IEnumerable<int>? ids,
-            string entityName)
+            IEnumerable<int>? ids)
             where T : BaseEntity<int>
         {
             var result = new ValidationListResult<T>();
-
+            var entityName = typeof(T).Name; // 👈 infer name automatically
             var validIds = ids?.Where(id => id > 0).Distinct().ToList() ?? new();
             if (!validIds.Any())
             {

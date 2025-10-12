@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Store.Data.Entities.ProductEntities;
+using Store.Services.Services.ProductColorService.Dtos;
+using Store.Services.Services.ProductSizeService.Dtos;
 
 
 namespace Store.Services.Services.ProductService.Dtos
@@ -8,13 +10,38 @@ namespace Store.Services.Services.ProductService.Dtos
     {
         public ProductProfile()
         {
-            
-                // Map Product → ProductResultDto
-                CreateMap<Product, ProductResultDto>()
-                    .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
-                    .ForMember(dest => dest.SubcategoryName, opt => opt.MapFrom(src => src.Subcategory != null ? src.Subcategory.Name : null))
-                    .ForMember(dest => dest.DiscountPercentage, opt => opt.MapFrom(src => src.Discount != null ? (decimal?)src.Discount.Percentage : null))
-                    .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images.Select(i => i.Url).ToList()));
+
+            // Map Product → ProductResultDto
+            CreateMap<Product, ProductResultDto>()
+                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
+                .ForMember(dest => dest.SubcategoryName, opt => opt.MapFrom(src => src.Subcategory != null ? src.Subcategory.Name : null))
+                .ForMember(dest => dest.DiscountPercentage, opt => opt.MapFrom(src => src.Discount != null ? (decimal?)src.Discount.Percentage : null))
+                .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images.Select(i => i.Url).ToList()))
+                // Map Colors
+                .ForMember(dest => dest.ProductColors, opt => opt.MapFrom(
+                    src => src.ProductColorJoins != null
+                        ? src.ProductColorJoins
+                            .Where(pc => pc.ProductColor != null)
+                            .Select(pc => new ColorResultDto
+                            {
+                                Id = pc.ProductColor.Id,
+                                ColorName = pc.ProductColor.ColorName
+                            }).ToList()
+                        : new List<ColorResultDto>()
+                ))
+
+                // Map Sizes
+                .ForMember(dest => dest.ProductSizes, opt => opt.MapFrom(
+                    src => src.ProductSizeJoins != null
+                        ? src.ProductSizeJoins
+                            .Where(ps => ps.ProductSize != null)
+                            .Select(ps => new SizeResultDto
+                            {
+                                Id = ps.ProductSize.Id,
+                                Name = ps.ProductSize.Name
+                            }).ToList()
+                        : new List<SizeResultDto>()
+                ));
 
                 // Map ProductCreateDto → Product
                 CreateMap<ProductCreateDto, Product>()
