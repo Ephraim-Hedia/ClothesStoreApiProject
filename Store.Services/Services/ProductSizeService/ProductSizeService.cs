@@ -5,7 +5,6 @@ using Store.Repositories.Interfaces;
 using Store.Repositories.Specification.ProductSpecification.SizeSpecs;
 using Store.Services.HandleResponse.CommonResponse;
 using Store.Services.Services.ProductSizeService.Dtos;
-using System.Net.Http.Headers;
 
 namespace Store.Services.Services.ProductSizeService
 {

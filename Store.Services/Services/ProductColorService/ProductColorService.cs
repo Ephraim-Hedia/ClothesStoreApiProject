@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using Store.Data.Entities.ProductEntities;
 using Store.Repositories.Interfaces;
 using Store.Repositories.Specification.ProductSpecification.ColorSpecs;
-using Store.Repositories.Specification.ProductSpecification.DiscountSpecs;
 using Store.Services.HandleResponse.CommonResponse;
 using Store.Services.Services.ProductColorService.Dtos;
 

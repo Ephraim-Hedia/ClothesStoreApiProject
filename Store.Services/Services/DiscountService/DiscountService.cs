@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
 using Store.Data.Entities.ProductEntities;
-using Store.Data.Migrations;
 using Store.Repositories.Interfaces;
-using Store.Repositories.Specification.ProductSpecification.CategorySpecs;
 using Store.Repositories.Specification.ProductSpecification.DiscountSpecs;
 using Store.Services.HandleResponse.CommonResponse;
 using Store.Services.Services.DiscountService.Dtos;

@@ -1,5 +1,6 @@
 ﻿using Store.Repositories.Interfaces;
 using Store.Repositories.Repositories;
+using Store.Services.Helper.Validation;
 using Store.Services.Services.CategoriesService;
 using Store.Services.Services.CategoriesService.Dtos;
 using Store.Services.Services.DiscountService;
@@ -26,6 +27,10 @@ namespace Store.Api.Extensions
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ISubcategoryService, SubcategoryService>();
             services.AddScoped<IDiscountService, DiscountService>();
+            services.AddScoped<IDiscountService, DiscountService>();
+            services.AddScoped<EntityListValidator>();
+            services.AddScoped<EntityValidator>();
+
 
 
 

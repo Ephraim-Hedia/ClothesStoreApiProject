@@ -40,7 +40,7 @@ namespace Store.Services.Services.SubcategoryService
             {
                 // check if Subcategory with the same name already exists
                 var specs = new SubcategorySpecification(dto.Name);
-                var existingSubcategoryWithSameName = _unitOfWork.Repository<Subcategory, int>().GetByIdWithSpecificationAsync(specs);
+                var existingSubcategoryWithSameName = await _unitOfWork.Repository<Subcategory, int>().GetByIdWithSpecificationAsync(specs);
                 if(existingSubcategoryWithSameName != null)
                     return response.Fail("400", "Invalid Data, Subcategory Name is Already Exist");
                 subcategory.Name = dto.Name;
