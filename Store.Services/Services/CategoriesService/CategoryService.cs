@@ -142,12 +142,20 @@ namespace Store.Services.Services.CategoriesService
             
             try
             {
+                
                 category = await _unitOfWork.Repository<Category, int>().GetByIdAsync(categoryId);
                 if(category == null)
                     return response.Fail("404", "Category Not Found");
 
                 if(!string.IsNullOrEmpty(dto.Name))
-                    category.Name = dto.Name;
+                {
+                    var specs = new CategorySpecification(dto.Name);
+                    var isExistingName = await _unitOfWork.Repository<Category, int>().GetByIdWithSpecificationAsync(specs);
+                    if(isExistingName == null)
+                        category.Name = dto.Name;
+                    else
+                        return response.Fail("400", "Invalid Data,Category Name is Already Exist");
+                }
                 if(!string.IsNullOrEmpty(dto.Description))
                     category.Description = dto.Description;
 

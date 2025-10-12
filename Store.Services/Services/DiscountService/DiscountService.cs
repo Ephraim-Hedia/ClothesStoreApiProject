@@ -3,6 +3,8 @@ using Microsoft.Extensions.Logging;
 using Store.Data.Entities.ProductEntities;
 using Store.Data.Migrations;
 using Store.Repositories.Interfaces;
+using Store.Repositories.Specification.ProductSpecification.CategorySpecs;
+using Store.Repositories.Specification.ProductSpecification.DiscountSpecs;
 using Store.Services.HandleResponse.CommonResponse;
 using Store.Services.Services.DiscountService.Dtos;
 
@@ -36,6 +38,11 @@ namespace Store.Services.Services.DiscountService
 
             try
             {
+                var specs = new DiscountSpecification(dto.Name);
+                var isExistingName = await _unitOfWork.Repository<Discount, int>().GetByIdWithSpecificationAsync(specs);
+                if (isExistingName != null)
+                    return response.Fail("400", "Invalid Data, Discount Name Is already Exist");
+
                 discount.Name = dto.Name;
                 discount.Percentage = dto.Percentage;
                 
@@ -129,8 +136,16 @@ namespace Store.Services.Services.DiscountService
                 if (discount == null)
                     return response.Fail("400", "Not Found discount Id");
 
-                if(dto.Name != null)
-                    discount.Name = dto.Name;
+                if (!string.IsNullOrEmpty(dto.Name))
+                {
+                    
+                    var specs = new DiscountSpecification(dto.Name);
+                    var isExistingName = await _unitOfWork.Repository<Discount, int>().GetByIdWithSpecificationAsync(specs);
+                    if (isExistingName == null)
+                        discount.Name = dto.Name;
+                    else
+                        return response.Fail("400", "Invalid Data,Category Name is Already Exist");
+                }
                 if (dto.Percentage != null)
                     discount.Percentage = dto.Percentage.Value;
 

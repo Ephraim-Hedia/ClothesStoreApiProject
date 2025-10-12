@@ -6,7 +6,7 @@ namespace Store.Repositories.Specification.ProductSpecification.ColorSpecs
     public class ColorSpecification : BaseSpecification<ProductColor>
     {
         public ColorSpecification(string colorName) : 
-            base(productcolor => productcolor.ColorName == colorName)
+            base(productcolor => productcolor.ColorName.ToLower().Trim() == colorName.ToLower().Trim())
         {
         }
 

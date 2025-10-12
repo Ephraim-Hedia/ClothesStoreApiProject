@@ -167,7 +167,13 @@ namespace Store.Services.Services.SubcategoryService
                 // Only update the properties that are not null or empty in the dto
                 
                 if (!string.IsNullOrEmpty(dto.Name))
+                {
+                    var specs = new SubcategorySpecification(dto.Name);
+                    var isExistingName = await _unitOfWork.Repository<Subcategory, int>().GetByIdWithSpecificationAsync(specs);
+                    if (isExistingName != null)
+                        return response.Fail("400", "Invalid Data, Subcategory Name is already Exist");
                     subcategory.Name = dto.Name;
+                }
                 if (!string.IsNullOrEmpty(dto.Description))
                     subcategory.Description = dto.Description;
 

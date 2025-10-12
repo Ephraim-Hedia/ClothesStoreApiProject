@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Logging;
 using Store.Data.Entities.ProductEntities;
 using Store.Repositories.Interfaces;
+using Store.Repositories.Specification.ProductSpecification.ColorSpecs;
+using Store.Repositories.Specification.ProductSpecification.DiscountSpecs;
 using Store.Services.HandleResponse.CommonResponse;
 using Store.Services.Services.ProductColorService.Dtos;
 
@@ -26,12 +28,19 @@ namespace Store.Services.Services.ProductColorService
         public async Task<CommonResponse<ColorResultDto>> AddColorAsync(ColorCreateDto dto)
         {
             var response = new CommonResponse<ColorResultDto>();
-            ProductColor color; 
+            ProductColor color = new ProductColor(); 
             if(dto == null)
                 return response.Fail("400", "Not Valid input Data");
+            if (string.IsNullOrEmpty(dto.ColorName))
+                return response.Fail("400", "Invalid Data, Color Name is Required");
             try
             {
-                color = _mapper.Map<ProductColor>(dto);
+                var specs = new ColorSpecification(dto.ColorName);
+                var isExistingName = await _unitOfWork.Repository<ProductColor, int>().GetByIdWithSpecificationAsync(specs);
+                if (isExistingName != null)
+                    return response.Fail("400", "Invalid Data, Color Name is arleady Exist");
+
+                color.ColorName = dto.ColorName;
                 await _unitOfWork.Repository<ProductColor , int>().AddAsync(color);
                 await _unitOfWork.CompleteAsync();
                 var mappedColor = _mapper.Map<ColorResultDto>(color);
@@ -114,6 +123,7 @@ namespace Store.Services.Services.ProductColorService
                 return response.Fail("400", "Invalid Data, Color Id must be greater than 0");
             if (dto == null)
                 return response.Fail("400", "Not Valid Data, Color not found, cannot update Color");
+            
 
             try
             {
@@ -122,7 +132,15 @@ namespace Store.Services.Services.ProductColorService
                     return response.Fail("404", "Color Not Found");
 
                 if (!string.IsNullOrEmpty(dto.ColorName))
-                    color.ColorName = dto.ColorName;
+                {
+
+                    var specs = new ColorSpecification(dto.ColorName);
+                    var isExistingName = await _unitOfWork.Repository<ProductColor, int>().GetByIdWithSpecificationAsync(specs);
+                    if (isExistingName == null)
+                        color.ColorName = dto.ColorName;
+                    else
+                        return response.Fail("400", "Invalid Data,Category Name is Already Exist");
+                }
 
                 _unitOfWork.Repository<ProductColor, int>().Update(color);
                 await _unitOfWork.CompleteAsync();

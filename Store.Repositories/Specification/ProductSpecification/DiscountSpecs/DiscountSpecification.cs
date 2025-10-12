@@ -5,7 +5,7 @@ namespace Store.Repositories.Specification.ProductSpecification.DiscountSpecs
     public class DiscountSpecification : BaseSpecification<Discount>
     {
         public DiscountSpecification(string discountName) 
-            : base(discount => discount.Name == discountName)
+            : base(discount => discount.Name.ToLower().Trim() == discountName.ToLower().Trim())
         {
         } 
 

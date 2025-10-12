@@ -5,7 +5,7 @@ namespace Store.Repositories.Specification.ProductSpecification.SizeSpecs
     public class SizeSpecification : BaseSpecification<ProductSize>
     {
         public SizeSpecification(string sizeName) : 
-            base(size => size.Name == sizeName)
+            base(size => size.Name.ToLower().Trim() == sizeName.ToLower().Trim())
         {
         }
 

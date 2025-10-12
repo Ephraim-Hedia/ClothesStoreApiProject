@@ -2,8 +2,10 @@
 using Microsoft.Extensions.Logging;
 using Store.Data.Entities.ProductEntities;
 using Store.Repositories.Interfaces;
+using Store.Repositories.Specification.ProductSpecification.SizeSpecs;
 using Store.Services.HandleResponse.CommonResponse;
 using Store.Services.Services.ProductSizeService.Dtos;
+using System.Net.Http.Headers;
 
 namespace Store.Services.Services.ProductSizeService
 {
@@ -26,13 +28,22 @@ namespace Store.Services.Services.ProductSizeService
         public async Task<CommonResponse<SizeResultDto>> AddSizeAsync(SizeCreateDto dto)
         {
             var response = new CommonResponse<SizeResultDto>();
-            ProductSize size;
+            ProductSize size = new ProductSize();
             if(dto == null)
                 return response.Fail("400" , "Invalid Data, Size Data is Null");
-            
+            if(string.IsNullOrEmpty(dto.Name))
+                return response.Fail("400", "Invalid Data, Size Name is Required");
             try
             {
-                size = _mapper.Map<ProductSize>(dto);
+                var specs = new SizeSpecification(dto.Name);
+                var isExistingName = await _unitOfWork.Repository<ProductSize, int>().GetByIdWithSpecificationAsync(specs);
+                if (isExistingName != null)
+                    return response.Fail("400", "Invalid Data, Size Name is Already Exist");
+                size.Name = dto.Name;
+
+                if(!string.IsNullOrEmpty(dto.Description))
+                    size.Description = dto.Description;
+
                 await _unitOfWork.Repository<ProductSize ,int>().AddAsync(size);
                 await _unitOfWork.CompleteAsync();
                 var mappedSize = _mapper.Map<SizeResultDto>(size);
@@ -112,19 +123,24 @@ namespace Store.Services.Services.ProductSizeService
         public async Task<CommonResponse<SizeResultDto>> UpdateSizeAsync(int sizeId, SizeUpdateDto dto)
         {
             var response = new CommonResponse<SizeResultDto>();
-            ProductSize size;
             if (sizeId <= 0)
                 return response.Fail("400", "Invalid Data, Size Id must be greater than 0");
             if (dto == null)
                 return response.Fail("400", "Not Valid Input, Size Data is Null");
             try
             {
-                size = await _unitOfWork.Repository<ProductSize, int>().GetByIdAsync(sizeId);
+                var size = await _unitOfWork.Repository<ProductSize, int>().GetByIdAsync(sizeId);
                 if (size == null)
                     return response.Fail("404", "Size Not Found");
-                
-                if(!string.IsNullOrEmpty(dto.Name))
+
+                if (!string.IsNullOrEmpty(dto.Name))
+                {
+                    var specs = new SizeSpecification(dto.Name);
+                    var isExistingName = await _unitOfWork.Repository<ProductSize, int>().GetByIdWithSpecificationAsync(specs);
+                    if (isExistingName != null)
+                        return response.Fail("400", "Invalid Data, Size Name is already Exist");
                     size.Name = dto.Name;
+                }
                 if(!string.IsNullOrEmpty(dto.Description))
                     size.Description = dto.Description;
 
