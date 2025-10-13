@@ -30,6 +30,15 @@ namespace Store.Api.Extensions
                     };
                 });
 
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                options.Password.RequireDigit = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequiredLength = 6;
+            })
+            .AddEntityFrameworkStores<StoreClothesDbContext>()
+            .AddDefaultTokenProviders();
             return services;
         }
     }

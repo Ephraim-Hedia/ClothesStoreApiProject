@@ -5,6 +5,7 @@ using Store.Services.Services.CategoriesService;
 using Store.Services.Services.CategoriesService.Dtos;
 using Store.Services.Services.DiscountService;
 using Store.Services.Services.DiscountService.Dtos;
+using Store.Services.Services.EmailService;
 using Store.Services.Services.ProductColorService;
 using Store.Services.Services.ProductColorService.Dtos;
 using Store.Services.Services.ProductService;
@@ -32,6 +33,8 @@ namespace Store.Api.Extensions
             services.AddScoped<IDiscountService, DiscountService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IEmailService, EmailService>();
+
 
             services.AddScoped<EntityListValidator>();
             services.AddScoped<EntityValidator>();

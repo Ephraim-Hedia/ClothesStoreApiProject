@@ -20,7 +20,9 @@ namespace Store.Services.Services.TokenService
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Email, appUser.Email)
+                new Claim(ClaimTypes.Email, appUser.Email),
+                new Claim(ClaimTypes.NameIdentifier, appUser.Id),
+                new Claim(ClaimTypes.Role, "User") // or dynamic roles
             };
 
             var Credentials = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256);
@@ -30,7 +32,7 @@ namespace Store.Services.Services.TokenService
                 Subject = new ClaimsIdentity(claims),
                 Issuer = _configuration["Token:Issuer"],
                 IssuedAt = DateTime.Now,
-                Expires = DateTime.Now.AddDays(1),
+                Expires = DateTime.Now.AddMinutes(double.Parse(_configuration["Token:ExpireMinutes"])),
                 SigningCredentials = Credentials
             };
 
