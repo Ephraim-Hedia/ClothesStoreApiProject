@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace Store.Data.Context
 {
-    public class StoreClothesDbContext : IdentityDbContext<ApplicationUser>
+    public class StoreClothesDbContext : IdentityDbContext<ApplicationUser ,ApplicationRole, string>
     {
         public StoreClothesDbContext(DbContextOptions<StoreClothesDbContext> options) : base(options)
         {

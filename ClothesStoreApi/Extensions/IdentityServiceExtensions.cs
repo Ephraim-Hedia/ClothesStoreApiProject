@@ -11,7 +11,7 @@ namespace Store.Api.Extensions
     {
         public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration _configuration)
         {
-            var builder = services.AddIdentityCore<ApplicationUser>();
+            var builder = services.AddIdentityCore<ApplicationUser >();
             builder = new IdentityBuilder(builder.UserType, builder.Services);
 
             builder.AddEntityFrameworkStores<StoreClothesDbContext>();
@@ -30,7 +30,7 @@ namespace Store.Api.Extensions
                     };
                 });
 
-            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
                 options.Password.RequireDigit = true;
                 options.Password.RequireUppercase = true;
@@ -39,7 +39,7 @@ namespace Store.Api.Extensions
             })
             .AddEntityFrameworkStores<StoreClothesDbContext>()
             .AddDefaultTokenProviders();
-            return services;
+            return services;    
         }
     }
 }

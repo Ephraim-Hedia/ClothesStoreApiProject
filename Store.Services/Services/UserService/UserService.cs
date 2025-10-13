@@ -1,6 +1,4 @@
-﻿using Azure.Core;
-using Humanizer;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Store.Data.Entities.IdentityEntities;
@@ -9,9 +7,6 @@ using Store.Services.Helper.Email;
 using Store.Services.Services.EmailService;
 using Store.Services.Services.TokenService;
 using Store.Services.Services.UserService.Dtos;
-
-
-
 
 namespace Store.Services.Services.UserService
 {
