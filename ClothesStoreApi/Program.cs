@@ -16,6 +16,9 @@ builder.Services.AddDbContext<StoreClothesDbContext>(options =>
 });
 
 builder.Services.AddApplicationServices();
+builder.Services.AddIdentityServices(builder.Configuration);
+builder.Services.AddSwaggerDocumentation();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -27,6 +30,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

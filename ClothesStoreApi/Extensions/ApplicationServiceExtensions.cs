@@ -13,6 +13,8 @@ using Store.Services.Services.ProductSizeService;
 using Store.Services.Services.ProductSizeService.Dtos;
 using Store.Services.Services.SubcategoryService;
 using Store.Services.Services.SubcategoryService.Dtos;
+using Store.Services.Services.TokenService;
+using Store.Services.Services.UserService;
 
 namespace Store.Api.Extensions
 {
@@ -28,6 +30,9 @@ namespace Store.Api.Extensions
             services.AddScoped<ISubcategoryService, SubcategoryService>();
             services.AddScoped<IDiscountService, DiscountService>();
             services.AddScoped<IDiscountService, DiscountService>();
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IUserService, UserService>();
+
             services.AddScoped<EntityListValidator>();
             services.AddScoped<EntityValidator>();
 

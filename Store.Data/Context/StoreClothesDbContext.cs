@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Store.Data.Entities.IdentityEntities;
 using Store.Data.Entities.ProductEntities;
 using System.Reflection;
-using System.Reflection.Emit;
 
 namespace Store.Data.Context
 {
-    public class StoreClothesDbContext : IdentityDbContext
+    public class StoreClothesDbContext : IdentityDbContext<ApplicationUser>
     {
-        public StoreClothesDbContext(DbContextOptions options) : base(options)
+        public StoreClothesDbContext(DbContextOptions<StoreClothesDbContext> options) : base(options)
         {
         }
 
