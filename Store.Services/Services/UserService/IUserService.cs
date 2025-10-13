@@ -7,5 +7,8 @@ namespace Store.Services.Services.UserService
     {
         Task<CommonResponse<UserDto>> LoginAsync(LoginDto loginDto);
         Task<CommonResponse<UserDto>> RegisterAsync(RegisterDto registerDto);
+        public Task<CommonResponse<bool>> SignOut();
+        public Task<CommonResponse<bool>> ForgetPassword(ForgetPasswordDto forgetPasswordDto);
+        public Task<CommonResponse<bool>> ResetPassword(ResetPasswordDto resetPasswordDto);
     }
 }
