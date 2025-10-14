@@ -47,7 +47,7 @@ namespace Store.Services.Services.UserService
             try
             {
                 var user = _mapper.Map<ApplicationUser>(dto);            
-                var result = await _userManager.CreateAsync(user);
+                var result = await _userManager.CreateAsync(user , dto.Password);
                 if (!result.Succeeded)
                     return response.Fail("400", string.Join(", ", result.Errors.Select(e => e.Description)));
 
