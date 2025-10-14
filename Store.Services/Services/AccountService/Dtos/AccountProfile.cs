@@ -2,9 +2,9 @@
 
 namespace Store.Services.Services.AccountService.Dtos
 {
-    public class UserProfile : Profile
+    public class AccountProfile : Profile
     {
-        public UserProfile()
+        public AccountProfile()
         {
             CreateMap<UserDto, RegisterDto>();
             CreateMap<UserDto, LoginDto>();

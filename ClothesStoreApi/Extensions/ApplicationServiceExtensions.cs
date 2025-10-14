@@ -18,6 +18,9 @@ using Store.Services.Services.SubcategoryService;
 using Store.Services.Services.SubcategoryService.Dtos;
 using Store.Services.Services.TokenService;
 using Store.Services.Services.AccountService;
+using Store.Services.Services.UserService;
+using Store.Services.Services.AccountService.Dtos;
+using Store.Services.Services.UserService.Dtos;
 
 namespace Store.Api.Extensions
 {
@@ -37,7 +40,7 @@ namespace Store.Api.Extensions
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IRoleService, RoleService>();
-
+            services.AddScoped<IUserService, UserService>();
 
 
             services.AddScoped<EntityListValidator>();
@@ -53,6 +56,8 @@ namespace Store.Api.Extensions
             services.AddAutoMapper(typeof(SubcategoryProfile));
             services.AddAutoMapper(typeof(DiscountProfile));
             services.AddAutoMapper(typeof(RoleProfile));
+            services.AddAutoMapper(typeof(AccountProfile));
+            services.AddAutoMapper(typeof(UserProfile));
 
 
             return services;
