@@ -4,6 +4,6 @@ namespace Store.Data.Entities.IdentityEntities
 {
     public class ApplicationUser : IdentityUser
     {
-        public Address Address { get; set; }
+        public List<Address>? Address { get; set; }
     }
 }

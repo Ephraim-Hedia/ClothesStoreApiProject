@@ -1,4 +1,6 @@
-﻿namespace Store.Services.Services.UserService.Dtos
+﻿using Store.Services.Services.AddressService.Dtos;
+
+namespace Store.Services.Services.UserService.Dtos
 {
     public class UserResultDto
     {
@@ -6,8 +8,6 @@
         public string Email { get; set; }
         public string UserName { get; set; }
         public string PhoneNumber { get; set; }
-
-        public string Street { get; set; }
-        public string City { get; set; }
+        public List<AddressResultDto> Addresses { get; set; }
     }
 }

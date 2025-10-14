@@ -1,11 +1,7 @@
-﻿namespace Store.Services.Services.UserService.Dtos
+﻿namespace Store.Services.Services.AddressService.Dtos
 {
-    public class UserUpdateDto
+    public class AddressCreateDto
     {
-        public string? UserName { get; set; }
-        public string? PhoneNumber { get; set; }
-
-        // Address Info
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? Street { get; set; }

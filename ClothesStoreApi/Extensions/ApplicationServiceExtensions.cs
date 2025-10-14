@@ -21,6 +21,7 @@ using Store.Services.Services.AccountService;
 using Store.Services.Services.UserService;
 using Store.Services.Services.AccountService.Dtos;
 using Store.Services.Services.UserService.Dtos;
+using Store.Services.Services.AddressService;
 
 namespace Store.Api.Extensions
 {
@@ -41,6 +42,8 @@ namespace Store.Api.Extensions
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAddressService, AddressService>();
+
 
 
             services.AddScoped<EntityListValidator>();

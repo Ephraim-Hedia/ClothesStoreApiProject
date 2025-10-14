@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Store.Data.Entities.IdentityEntities;
 using Store.Services.HandleResponse.CommonResponse;
+using Store.Services.Services.AddressService;
+using Store.Services.Services.AddressService.Dtos;
 using Store.Services.Services.UserService.Dtos;
 
 namespace Store.Services.Services.UserService
@@ -12,16 +14,19 @@ namespace Store.Services.Services.UserService
     public class UserService : IUserService
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IAddressService _addressService;
         private readonly ILogger<IUserService> _logger;
         private readonly IMapper _mapper;
         public UserService(
             UserManager<ApplicationUser> userManager,
             ILogger<IUserService> logger,
-            IMapper mapper)
+            IMapper mapper,
+            IAddressService addressService)
         {
             _userManager = userManager;
             _logger = logger;
             _mapper = mapper;
+            _addressService = addressService;
         }
         public async Task<CommonResponse<UserResultDto>> CreateUserAsync(UserCreateDto dto)
         {
@@ -41,10 +46,24 @@ namespace Store.Services.Services.UserService
 
             try
             {
-                var user = _mapper.Map<ApplicationUser>(dto);
+                var user = _mapper.Map<ApplicationUser>(dto);            
                 var result = await _userManager.CreateAsync(user);
                 if (!result.Succeeded)
                     return response.Fail("400", string.Join(", ", result.Errors.Select(e => e.Description)));
+
+                // Optional: Add Address if data provided
+                if (!string.IsNullOrEmpty(dto.Street) || !string.IsNullOrEmpty(dto.City))
+                {
+                    var addressDto = new AddressCreateDto
+                    {
+                        Street = dto.Street,
+                        City = dto.City,
+                        State = dto.State,
+                        ZipCode = dto.ZipCode
+                    };
+
+                    await _addressService.AddAddressToUserAsync(user.Id, addressDto);
+                }
 
                 var mappedUser = _mapper.Map<UserResultDto>(user);
                 return response.Success(mappedUser);
@@ -87,7 +106,7 @@ namespace Store.Services.Services.UserService
             var response = new CommonResponse<IReadOnlyList<UserResultDto>>();
             try
             {
-                var users = await _userManager.Users.ToListAsync();
+                var users = await _userManager.Users.Include(user => user.Address).ToListAsync();
                 if (!users.Any())
                     return response.Fail("404", "Not Found Users");
                 var mappedUsers = _mapper.Map<IReadOnlyList<UserResultDto>>(users);
@@ -108,7 +127,9 @@ namespace Store.Services.Services.UserService
                 return response.Fail("400", "Invalid Data, User Id is null");
             try
             {
-                var user = await _userManager.FindByIdAsync(userId);
+                var user = await _userManager.Users
+                    .Include(user => user.Address)
+                    .FirstOrDefaultAsync(user => user.Id == userId);
                 if (user == null)
                     return response.Fail("404", $"Not Found User With Id : {userId}");
                 var mappedUser = _mapper.Map<UserResultDto>(user);
@@ -140,17 +161,42 @@ namespace Store.Services.Services.UserService
                 if (!string.IsNullOrEmpty(dto.PhoneNumber))
                     user.PhoneNumber = dto.PhoneNumber;
 
-                if (user.Address == null)
-                    user.Address = new Address();
-
-                if (!string.IsNullOrEmpty(dto.Street))
-                    user.Address.Street = dto.Street;
-
-                if (!string.IsNullOrEmpty(dto.City))
-                    user.Address.City = dto.City;
                 var result = await _userManager.UpdateAsync(user);
                 if (!result.Succeeded)
                     return response.Fail("400", string.Join(", ", result.Errors.Select(e => e.Description)));
+
+                // Address update handled via AddressService (only if you want)
+                if (!string.IsNullOrEmpty(dto.Street) || !string.IsNullOrEmpty(dto.City))
+                {
+                    var addresses = await _addressService.GetAddressesByUserIdAsync(userId);
+                    if (addresses.IsSuccess && addresses.Data.Any())
+                    {
+                        var firstAddress = addresses.Data.First();
+                        var updateDto = new AddressUpdateDto
+                        {
+                            Street = dto.Street,
+                            City = dto.City,
+                            State = dto.State,
+                            ZipCode = dto.ZipCode
+                        };
+
+                        await _addressService.UpdateAddressAsync(userId, firstAddress.Id, updateDto);
+                    }
+                    else
+                    {
+                        // Add new address if none exists
+                        var createDto = new AddressCreateDto
+                        {
+                            Street = dto.Street,
+                            City = dto.City,
+                            State = dto.State,
+                            ZipCode = dto.ZipCode
+                        };
+
+                        await _addressService.AddAddressToUserAsync(userId, createDto);
+                    }
+                }
+
 
                 var mappedUser = _mapper.Map<UserResultDto>(user);
                 return response.Success(mappedUser);
