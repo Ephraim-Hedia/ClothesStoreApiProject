@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Store.Services.Services.UserService.Dtos
+namespace Store.Services.Services.AccountService.Dtos
 {
     public class ForgetPasswordDto
     {

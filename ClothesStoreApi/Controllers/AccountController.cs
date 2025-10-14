@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Store.Services.Services.UserService;
-using Store.Services.Services.UserService.Dtos;
+using Store.Services.Services.AccountService;
+using Store.Services.Services.AccountService.Dtos;
 
 namespace Store.Api.Controllers
 {
@@ -8,9 +8,9 @@ namespace Store.Api.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly IUserService _userService;
+        private readonly IAccountService _userService;
         public AccountController(
-            IUserService userService
+            IAccountService userService
             )
         {
             _userService = userService;

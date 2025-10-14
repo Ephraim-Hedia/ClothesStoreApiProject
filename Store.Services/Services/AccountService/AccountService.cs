@@ -6,24 +6,24 @@ using Store.Services.HandleResponse.CommonResponse;
 using Store.Services.Helper.Email;
 using Store.Services.Services.EmailService;
 using Store.Services.Services.TokenService;
-using Store.Services.Services.UserService.Dtos;
+using Store.Services.Services.AccountService.Dtos;
 
-namespace Store.Services.Services.UserService
+namespace Store.Services.Services.AccountService
 {
-    public class UserService : IUserService
+    public class AccountService : IAccountService
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ITokenService _tokenService;
         private readonly IConfiguration _config;
-        private readonly ILogger<UserService> _logger;
+        private readonly ILogger<AccountService> _logger;
         private readonly IEmailService _emailService;
-        public UserService(
+        public AccountService(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IConfiguration config,
             ITokenService tokenService,
-            ILogger<UserService> logger,
+            ILogger<AccountService> logger,
             IEmailService emailService)
         {
             _userManager = userManager;

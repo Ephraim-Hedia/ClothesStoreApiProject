@@ -1,9 +1,9 @@
 ﻿using Store.Services.HandleResponse.CommonResponse;
-using Store.Services.Services.UserService.Dtos;
+using Store.Services.Services.AccountService.Dtos;
 
-namespace Store.Services.Services.UserService
+namespace Store.Services.Services.AccountService
 {
-    public interface IUserService
+    public interface IAccountService
     {
         Task<CommonResponse<UserDto>> LoginAsync(LoginDto loginDto);
         Task<CommonResponse<UserDto>> RegisterAsync(RegisterDto registerDto);

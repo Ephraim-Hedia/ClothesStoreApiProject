@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 
-namespace Store.Services.Services.UserService.Dtos
+namespace Store.Services.Services.AccountService.Dtos
 {
     public class UserProfile : Profile
     {

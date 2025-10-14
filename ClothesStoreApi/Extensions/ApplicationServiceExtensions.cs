@@ -17,7 +17,7 @@ using Store.Services.Services.RoleService.Dtos;
 using Store.Services.Services.SubcategoryService;
 using Store.Services.Services.SubcategoryService.Dtos;
 using Store.Services.Services.TokenService;
-using Store.Services.Services.UserService;
+using Store.Services.Services.AccountService;
 
 namespace Store.Api.Extensions
 {
@@ -34,7 +34,7 @@ namespace Store.Api.Extensions
             services.AddScoped<IDiscountService, DiscountService>();
             services.AddScoped<IDiscountService, DiscountService>();
             services.AddScoped<ITokenService, TokenService>();
-            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IRoleService, RoleService>();
 
