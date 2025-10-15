@@ -28,6 +28,8 @@ namespace Store.Repositories.Repositories
         public void Delete(TEntity entity)
             => _context.Set<TEntity>().Remove(entity);
 
+        public void DeleteRange(ICollection<TEntity> entities)
+            => _context.Set<TEntity>().RemoveRange(entities);
 
         public async Task<IReadOnlyList<TEntity>> GetAllWithSpecificationAsync(ISpecification<TEntity> specs)
             => await ApplySpecification(specs).ToListAsync();

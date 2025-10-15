@@ -12,6 +12,7 @@ namespace Store.Repositories.Interfaces
         Task AddAsync(TEntity entity);
         void Update(TEntity entity);
         void Delete(TEntity entity);
+        void DeleteRange(ICollection<TEntity> entities);
 
     }
 }

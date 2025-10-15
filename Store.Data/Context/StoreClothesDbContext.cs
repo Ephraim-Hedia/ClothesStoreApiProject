@@ -29,7 +29,7 @@ namespace Store.Data.Context
         DbSet<ProductStock> ProductStocks { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
-        public DbSet<CustomerBasket> CustomerBaskets { get; set; }
+        public DbSet<Basket> Baskets { get; set; }
         public DbSet<BasketItem> BasketItems { get; set; }
     }
 }

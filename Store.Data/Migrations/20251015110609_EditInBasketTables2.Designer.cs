@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Store.Data.Context;
 
@@ -11,9 +12,11 @@ using Store.Data.Context;
 namespace Store.Data.Migrations
 {
     [DbContext(typeof(StoreClothesDbContext))]
-    partial class StoreClothesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251015110609_EditInBasketTables2")]
+    partial class EditInBasketTables2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -166,6 +169,9 @@ namespace Store.Data.Migrations
                     b.Property<int>("BasketId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("BasketId1")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -197,6 +203,8 @@ namespace Store.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BasketId");
+
+                    b.HasIndex("BasketId1");
 
                     b.ToTable("BasketItems");
                 });
@@ -730,10 +738,14 @@ namespace Store.Data.Migrations
             modelBuilder.Entity("Store.Data.Entities.BasketEntities.BasketItem", b =>
                 {
                     b.HasOne("Store.Data.Entities.BasketEntities.Basket", "Basket")
-                        .WithMany("BasketItems")
+                        .WithMany()
                         .HasForeignKey("BasketId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Store.Data.Entities.BasketEntities.Basket", null)
+                        .WithMany("BasketItems")
+                        .HasForeignKey("BasketId1");
 
                     b.Navigation("Basket");
                 });
