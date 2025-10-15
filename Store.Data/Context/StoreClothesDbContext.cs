@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Store.Data.Entities.BasketEntities;
 using Store.Data.Entities.IdentityEntities;
 using Store.Data.Entities.OrderEntities;
 using Store.Data.Entities.ProductEntities;
@@ -28,5 +29,7 @@ namespace Store.Data.Context
         DbSet<ProductStock> ProductStocks { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<CustomerBasket> CustomerBaskets { get; set; }
+        public DbSet<BasketItem> BasketItems { get; set; }
     }
 }

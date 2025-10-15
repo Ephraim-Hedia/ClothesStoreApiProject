@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Store.Data.Context;
 
@@ -11,9 +12,11 @@ using Store.Data.Context;
 namespace Store.Data.Migrations
 {
     [DbContext(typeof(StoreClothesDbContext))]
-    partial class StoreClothesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251015102549_AddBasketTables")]
+    partial class AddBasketTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -710,7 +713,7 @@ namespace Store.Data.Migrations
 
                             b1.HasKey("CustomerBasketId", "Id");
 
-                            b1.ToTable("BasketItems");
+                            b1.ToTable("BasketItem");
 
                             b1.WithOwner()
                                 .HasForeignKey("CustomerBasketId");
