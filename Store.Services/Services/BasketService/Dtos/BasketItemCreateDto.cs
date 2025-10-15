@@ -1,10 +1,16 @@
-﻿namespace Store.Services.Services.BasketService.Dtos
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Store.Services.Services.BasketService.Dtos
 {
     public class BasketItemCreateDto
     {
+        [Required] 
         public int ProductId { get; set; }
-        public string ProductColor { get; set; }
-        public string ProductSize { get; set; }
+        [Required]
+        public int ColorId { get; set; }
+        [Required]
+        public int SizeId { get; set; }
+        [Required]
         public int Quantity { get; set; }
     }
 }

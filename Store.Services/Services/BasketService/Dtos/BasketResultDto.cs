@@ -5,6 +5,6 @@
         public int Id { get; set; }
         public string UserId { get; set; }
         public List<BasketItemResultDto> Items { get; set; }
-        public decimal Total { get; set; }
+        public decimal Total { get; set; } 
     }
 }
