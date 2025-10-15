@@ -9,6 +9,9 @@ namespace Store.Repositories.Specification.BasketSpecification.BasketSpecs
             : base(basket => basket.UserId == userId)
         {
             AddInclude(b => b.BasketItems);
+            AddInclude($"{nameof(Basket.BasketItems)}.{nameof(BasketItem.Product)}");
+            AddInclude($"{nameof(Basket.BasketItems)}.{nameof(BasketItem.Color)}");
+            AddInclude($"{nameof(Basket.BasketItems)}.{nameof(BasketItem.Size)}");
         }
     }
 }
