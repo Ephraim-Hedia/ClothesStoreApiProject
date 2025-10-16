@@ -19,14 +19,14 @@ namespace Store.Data.Context
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             base.OnModelCreating(builder);
         }
-        DbSet<Product> Products { get; set; }
-        DbSet<Category> Categories { get; set; }
-        DbSet<Subcategory> Subcategories { get; set; }
-        DbSet<Image> Images { get; set; }
-        DbSet<ProductColor> ProductColors { get; set; }
-        DbSet<ProductSize>  ProductSizes { get; set; }
-        DbSet<Discount> Discounts { get; set; }
-        DbSet<ProductStock> ProductStocks { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Subcategory> Subcategories { get; set; }
+        public DbSet<Image> Images { get; set; }
+        public DbSet<ProductColor> ProductColors { get; set; }
+        public DbSet<ProductSize>  ProductSizes { get; set; }
+        public DbSet<Discount> Discounts { get; set; }
+        public DbSet<ProductStock> ProductStocks { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Basket> Baskets { get; set; }

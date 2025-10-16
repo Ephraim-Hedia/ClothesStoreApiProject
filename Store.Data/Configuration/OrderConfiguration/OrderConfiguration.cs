@@ -11,8 +11,14 @@ namespace Store.Data.Configuration.OrderConfiguration
             builder.OwnsOne(order => order.ShippingAddress, ShippingAddress =>
             {
                 ShippingAddress.WithOwner();
+                ShippingAddress.Property(a => a.City).IsRequired();
+                ShippingAddress.Property(a => a.Street).IsRequired();
             });
-            builder.HasMany(order => order.OrderItems).WithOne().OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(o => o.OrderItems)
+               .WithOne(oi => oi.Order)
+               .HasForeignKey(oi => oi.OrderId)
+               .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }

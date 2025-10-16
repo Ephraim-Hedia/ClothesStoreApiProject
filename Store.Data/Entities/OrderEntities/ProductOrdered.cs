@@ -1,6 +1,6 @@
 ﻿namespace Store.Data.Entities.OrderEntities
 {
-    public class ProductItemOrdered
+    public class ProductOrdered
     {
         public int ProductItemId { get; set; }
         public string ProductName { get; set; }

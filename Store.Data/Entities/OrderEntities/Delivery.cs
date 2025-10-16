@@ -4,13 +4,11 @@
     {
         public static int GetShippingPrice (string city)
         {
-            switch(city)
+            return city switch
             {
-                case "Cairo":
-                    return 55;
-                default:
-                    throw new NotImplementedException ();
-            }
+                "Cairo" => 55,
+                _ => 70 // default price or 0 if you prefer
+            };
         }
     }
 }

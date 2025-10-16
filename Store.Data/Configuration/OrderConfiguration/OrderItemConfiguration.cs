@@ -11,6 +11,7 @@ namespace Store.Data.Configuration.OrderConfiguration
             builder.OwnsOne(item => item.ItemOrdered, itemOrdered =>
             {
                 itemOrdered.WithOwner();
+                itemOrdered.Property(io => io.ProductName).IsRequired();
             });
         }
     }

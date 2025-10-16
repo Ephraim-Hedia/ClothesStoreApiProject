@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Store.Data.Context;
 
@@ -11,9 +12,11 @@ using Store.Data.Context;
 namespace Store.Data.Migrations
 {
     [DbContext(typeof(StoreClothesDbContext))]
-    partial class StoreClothesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251016101017_AddOrderEntitiesAfterEdit")]
+    partial class AddOrderEntitiesAfterEdit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -827,7 +830,7 @@ namespace Store.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("Store.Data.Entities.OrderEntities.ProductOrdered", "ItemOrdered", b1 =>
+                    b.OwnsOne("Store.Data.Entities.OrderEntities.ProductItemOrdered", "ItemOrdered", b1 =>
                         {
                             b1.Property<int>("OrderItemId")
                                 .HasColumnType("int");

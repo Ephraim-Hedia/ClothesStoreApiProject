@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
 using Store.Data.Entities.BasketEntities;
-using Store.Data.Entities.IdentityEntities;
 using Store.Data.Entities.ProductEntities;
 using Store.Repositories.Interfaces;
-using Store.Repositories.Specification.BasketSpecification.BasketItemSpecs;
 using Store.Repositories.Specification.BasketSpecification.BasketSpecs;
 using Store.Services.HandleResponse.CommonResponse;
 using Store.Services.Services.BasketService.Dtos;
@@ -93,9 +91,9 @@ namespace Store.Services.Services.BasketService
 
             // 🧩 Check if the item already exists in basket
             var existingItem = basket.BasketItems
-                .FirstOrDefault(i=> i.ProductId == dto.ProductId &&
-                                    i.ColorId == dto.ColorId &&
-                                    i.SizeId == dto.SizeId);
+                                        .FirstOrDefault(i=> i.ProductId == dto.ProductId &&
+                                                            i.ColorId == dto.ColorId &&
+                                                            i.SizeId == dto.SizeId);
             if (existingItem != null)
             {
                 existingItem.Quantity += dto.Quantity;
