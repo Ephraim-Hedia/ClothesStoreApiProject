@@ -12,7 +12,7 @@ namespace Store.Repositories.Repositories
         public GenericRepository(StoreClothesDbContext context)
         {
             _context = context; 
-        }
+        } 
         public async Task AddAsync(TEntity entity)
             => await _context.Set<TEntity>().AddAsync(entity);
 
