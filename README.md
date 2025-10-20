@@ -33,7 +33,7 @@ It supports authentication, user management, product management, shopping basket
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/Ephraim-Hedia/StoreAPI.git
+https://github.com/Ephraim-Hedia/ClothesStoreApiProject.git
 ```
 
 ### 2. Navigate to the API project
