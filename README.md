@@ -73,23 +73,17 @@ Update your **appsettings.json** with the following:
   "ExpireMinutes": 60
 }
 
-| Method | Endpoint                | Description                 |
-| ------ | ----------------------- | --------------------------- |
-| POST   | `/api/account/register` | Register a new user         |
-| POST   | `/api/account/login`    | Login and receive JWT token |
-| GET    | `/api/products`         | Get all products            |
-| POST   | `/api/basket`           | Add item to basket          |
-| POST   | `/api/order`            | Create a new order          |
-| GET    | `/api/address`          | Get user addresses          |
+## 🧪 How to Run
 
-🔮 Future Enhancements
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Ephraim-Hedia/StoreAPI.git
+2. **Navigate to the API project**
+cd Store.API
+3. **Apply database migrations**
+dotnet ef database update
+4. **Run the project**
+dotnet run
+5. **Open in browser or API testing tool**
+https://localhost:5001/swagger
 
-Add payment gateway integration (Stripe or PayPal)
-
-Add product categories and search filters
-
-Admin dashboard for product and order management
-
-Email notifications for order confirmation
-
-Support for multiple shipping addresses per user
