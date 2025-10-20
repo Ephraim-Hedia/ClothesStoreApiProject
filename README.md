@@ -69,7 +69,7 @@ You must configure the following settings in your `appsettings.json` or environm
   "ExpireMinutes": "60"
 },
 "ConnectionStrings": {
-  "DefaultConnection": "Server=.;Database=StoreDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True"
+  "DefaultConnection": "Server=.;Database=StoreClothesDbContext;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True"
 }
 ```
 
