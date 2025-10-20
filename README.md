@@ -77,13 +77,8 @@ Update your **appsettings.json** with the following:
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/Ephraim-Hedia/StoreAPI.git
-2. **Navigate to the API project**
-cd Store.API
-3. **Apply database migrations**
-dotnet ef database update
-4. **Run the project**
-dotnet run
-5. **Open in browser or API testing tool**
-https://localhost:5001/swagger
+  git clone https://github.com/Ephraim-Hedia/StoreAPI.git
+  cd Store.API
+  dotnet ef database update
+  https://localhost:5001/swagger
 
