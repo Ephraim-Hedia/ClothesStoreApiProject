@@ -38,7 +38,7 @@ https://github.com/Ephraim-Hedia/ClothesStoreApiProject.git
 
 ### 2. Navigate to the API project
 ```bash
-cd Store.API
+cd ClothesStore/ClothesStoreApi/
 ```
 
 ### 3. Apply database migrations
@@ -53,7 +53,7 @@ dotnet run
 
 ### 5. Open Swagger UI
 ```
-https://localhost:5001/swagger
+https://localhost:7224/swagger
 ```
 
 ---
