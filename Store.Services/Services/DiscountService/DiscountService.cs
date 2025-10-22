@@ -6,6 +6,7 @@ using Store.Repositories.Specification.ProductSpecification.DiscountSpecs;
 using Store.Services.HandleResponse.CommonResponse;
 using Store.Services.Services.CategoriesService;
 using Store.Services.Services.DiscountService.Dtos;
+using Store.Services.Services.SubcategoryService;
 
 namespace Store.Services.Services.DiscountService
 {
@@ -15,21 +16,25 @@ namespace Store.Services.Services.DiscountService
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
         private readonly ICategoryService _categoryService;
+        private readonly ISubcategoryService _subcategoryService;
         public DiscountService(
             IUnitOfWork unitOfWork,
             IMapper mapper,
             ILogger<DiscountService> logger,
-            ICategoryService categoryService
+            ICategoryService categoryService,
+            ISubcategoryService subcategoryService
             )
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _logger = logger;
             _categoryService = categoryService;
+            _subcategoryService = subcategoryService;
 
         }
         public async Task<CommonResponse<DiscountResultDto>> AddDiscountAsync(DiscountCreateDto dto)
         {
+           
             var response = new CommonResponse<DiscountResultDto>();
             Discount discount = new Discount();
             if (dto == null)
@@ -39,6 +44,8 @@ namespace Store.Services.Services.DiscountService
             if (dto.Percentage <= 0)
                 return response.Fail("400", "Invalid Data, CategoryId must be greater than 0");
 
+            await _unitOfWork.BeginTransactionAsync(); // Start transaction
+
             try
             {
                 var specs = new DiscountSpecification(dto.Name);
@@ -46,27 +53,38 @@ namespace Store.Services.Services.DiscountService
                 if (isExistingName != null)
                     return response.Fail("400", "Invalid Data, Discount Name Is already Exist");
 
+                // Create discount but do not save yet
                 discount.Name = dto.Name;
                 discount.Percentage = dto.Percentage;
-                
                 // Add the Discount First 
                 await _unitOfWork.Repository<Discount , int>().AddAsync(discount);
                 await _unitOfWork.CompleteAsync();
 
                 // Apply Discount On Categories
-                var result = await _categoryService.UpdateCategoriesWithNewDiscountAsync(dto.CategoryIds, discount.Id);
-                if (!result.IsSuccess)
+                var categoryResult = await _categoryService.UpdateCategoriesWithNewDiscountAsync(dto.CategoryIds, discount.Id , useExistingTransaction: true);
+                if (!categoryResult.IsSuccess)
                 {
-                    response.Errors.Code = result.Errors.Code;
-                    response.Errors.Message = "The Discount is Added But Error while Apply Discount On Categories : " + result.Errors.Message;
-                    return response;
+                    await _unitOfWork.RollbackTransactionAsync();
+                    return response.Fail(categoryResult.Errors.Code, "Error while applying discount to Categories: " + categoryResult.Errors.Message); ;
                 }
+                // Apply Discount On Subcategories
+                var subcategoryResult = await _subcategoryService.UpdateSubcategoriesWithNewDiscountAsync(dto.SubcategoryIds, discount.Id, useExistingTransaction: true);
+                if (!subcategoryResult.IsSuccess)
+                {
+                    await _unitOfWork.RollbackTransactionAsync();
+                    return response.Fail(subcategoryResult.Errors.Code, "Error while applying discount to Subcategories: " + subcategoryResult.Errors.Message);
+                }
+                // Everything succeeded — now save all
+                await _unitOfWork.CompleteAsync();
+                await _unitOfWork.CommitTransactionAsync();
+
                 var mappedDiscount = _mapper.Map<DiscountResultDto>(discount);
                 return response.Success(mappedDiscount);
 
             }
             catch (Exception err)
             {
+                await _unitOfWork.RollbackTransactionAsync();
                 _logger.LogError(err.Message);
                 throw;
             }
@@ -146,6 +164,7 @@ namespace Store.Services.Services.DiscountService
             if ((dto.Percentage <= 0 || dto.Percentage > 100) && dto.Percentage != null)
                 return response.Fail("400", "Invalid Data, Percentage must be between 0 to 100");
 
+            await _unitOfWork.BeginTransactionAsync();
             try
             {
                 // Check if the discount not exist 
@@ -162,7 +181,10 @@ namespace Store.Services.Services.DiscountService
                     if (isExistingName == null)
                         discount.Name = dto.Name;
                     else
+                    {
+                        await _unitOfWork.RollbackTransactionAsync();
                         return response.Fail("400", "Invalid Data,Discount Name is Already Exist");
+                    }
                 }
 
                 // Check if there is any update in the percentage of the discount
@@ -171,28 +193,43 @@ namespace Store.Services.Services.DiscountService
 
                 // update the discount
                 _unitOfWork.Repository<Discount, int>().Update(discount);
-                await _unitOfWork.CompleteAsync();
 
 
                 // The discount is updated but we want to check if 
                 // there is any update we need to apply to relationship between the discount
                 // and the categories, Subcategories or Products 
-                if (dto.CategoryIds != null || dto.CategoryIds.Any())
+                if (dto.CategoryIds != null )
                 {
                     // Apply Discount On Categories
-                    var result = await _categoryService.UpdateCategoriesWithNewDiscountAsync(dto.CategoryIds, discount.Id);
-                    if (!result.IsSuccess)
+                    var categoryResult = await _categoryService.UpdateCategoriesWithNewDiscountAsync(dto.CategoryIds, discount.Id, useExistingTransaction: true);
+                    if (!categoryResult.IsSuccess)
                     {
-                        response.Errors.Code = result.Errors.Code;
-                        response.Errors.Message = "The Discount is Updated But Error while Apply Discount On Categories : " + result.Errors.Message;
-                        return response;
+                        await _unitOfWork.RollbackTransactionAsync();
+                        return response.Fail(categoryResult.Errors.Code, "Error while applying discount to Categories: " + categoryResult.Errors.Message);
                     }
                 }
+                if (dto.SubcategoryIds != null )
+                {
+                    // Apply Discount On Categories
+                    var subcategoryResult = await _subcategoryService.UpdateSubcategoriesWithNewDiscountAsync(dto.SubcategoryIds, discount.Id, useExistingTransaction: true);
+                    if (!subcategoryResult.IsSuccess)
+                    {
+                        await _unitOfWork.RollbackTransactionAsync();
+                        return response.Fail(subcategoryResult.Errors.Code, "Error while applying discount to Subcategories: " + subcategoryResult.Errors.Message);
+
+                    }
+                }
+
+                // All succeeded
+                await _unitOfWork.CompleteAsync();
+                await _unitOfWork.CommitTransactionAsync();
+
                 var mappedDiscount = _mapper.Map<DiscountResultDto>(discount);
                 return response.Success(mappedDiscount);
             }
             catch (Exception err)
             {
+                await _unitOfWork.RollbackTransactionAsync();
                 _logger.LogError(err.Message);
                 throw;
             }

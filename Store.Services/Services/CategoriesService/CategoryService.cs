@@ -174,7 +174,7 @@ namespace Store.Services.Services.CategoriesService
                 throw;
             }
         }
-        public async Task<CommonResponse<bool>> UpdateCategoriesWithNewDiscountAsync(List<int> categoryIds, int discountId)
+        public async Task<CommonResponse<bool>> UpdateCategoriesWithNewDiscountAsync(List<int> categoryIds, int discountId, bool useExistingTransaction = false)
         {
             var response = new CommonResponse<bool>();
             if (discountId <= 0)
@@ -182,6 +182,8 @@ namespace Store.Services.Services.CategoriesService
             if (!categoryIds.Any() || categoryIds == null)
                 return response.Fail("400", "Category Ids is null or empty");
 
+            if (!useExistingTransaction)
+                await _unitOfWork.BeginTransactionAsync(); // only if not already in one
             try
             {
                 var discount = await _unitOfWork.Repository<Discount, int>().GetByIdAsync(discountId);
@@ -197,10 +199,15 @@ namespace Store.Services.Services.CategoriesService
                         return response;
                     }
                 }
+                await _unitOfWork.CompleteAsync();
+
+                if (!useExistingTransaction)
+                    await _unitOfWork.CommitTransactionAsync();
                 return response.Success(true);
             }
             catch (Exception err)
             {
+                await _unitOfWork.RollbackTransactionAsync();
                 _logger.LogError(err.Message);
                 throw;
             }
@@ -224,7 +231,6 @@ namespace Store.Services.Services.CategoriesService
 
                 category.Discount = discount;
                 _unitOfWork.Repository<Category, int>().Update(category);
-                await _unitOfWork.CompleteAsync();
                 var mappedCategory = _mapper.Map<CategoryResultDto>(category);
 
                 return response.Success(mappedCategory);

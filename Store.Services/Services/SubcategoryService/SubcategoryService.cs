@@ -4,6 +4,7 @@ using Store.Data.Entities.ProductEntities;
 using Store.Repositories.Interfaces;
 using Store.Repositories.Specification.ProductSpecification.SubcategorySpecs;
 using Store.Services.HandleResponse.CommonResponse;
+using Store.Services.Services.CategoriesService.Dtos;
 using Store.Services.Services.SubcategoryService.Dtos;
 
 namespace Store.Services.Services.SubcategoryService
@@ -144,6 +145,7 @@ namespace Store.Services.Services.SubcategoryService
             
         }
 
+
         public async Task<CommonResponse<SubcategoryResultDto>> UpdateSubcategoryAsync(int subcategoryId, SubcategoryUpdateDto dto)
         {
             var response = new CommonResponse<SubcategoryResultDto>();
@@ -201,6 +203,75 @@ namespace Store.Services.Services.SubcategoryService
                 _unitOfWork.Repository<Subcategory, int>().Update(subcategory);
                 await _unitOfWork.CompleteAsync();
                 var mappedSubcategory = _mapper.Map<SubcategoryResultDto>(subcategory);
+                return response.Success(mappedSubcategory);
+            }
+            catch (Exception err)
+            {
+                _logger.LogError(err.Message);
+                throw;
+            }
+        }
+        public async Task<CommonResponse<bool>> UpdateSubcategoriesWithNewDiscountAsync(List<int> subcategoryIds, int discountId, bool useExistingTransaction = false)
+        {
+            var response = new CommonResponse<bool>();
+            if (discountId <= 0)
+                return response.Fail("400", "Discount Id Must be more than 0");
+            if (subcategoryIds == null || !subcategoryIds.Any())
+                return response.Fail("400", "Category Ids is null or empty");
+
+            if (!useExistingTransaction)
+                await _unitOfWork.BeginTransactionAsync(); // only if not already in one
+
+            try
+            {
+                var discount = await _unitOfWork.Repository<Discount, int>().GetByIdAsync(discountId);
+                if (discount == null)
+                    return response.Fail("404", "Not found Discount");
+
+                foreach (var subcategoryId in subcategoryIds)
+                {
+                    var result = await UpdateSubcategoryWithNewDiscountAsync(subcategoryId, discountId);
+                    if (!result.IsSuccess)
+                    {
+                        response.Errors.Code = result.Errors.Code;
+                        response.Errors.Message = result.Errors.Message;
+                        return response;
+                    }
+                }
+                await _unitOfWork.CompleteAsync();
+
+                if (!useExistingTransaction)
+                    await _unitOfWork.CommitTransactionAsync();
+                return response.Success(true);
+            }
+            catch (Exception err)
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                _logger.LogError(err.Message);
+                throw;
+            }
+        }
+
+        public async Task<CommonResponse<SubcategoryResultDto>> UpdateSubcategoryWithNewDiscountAsync(int subcategoryId, int discountId)
+        {
+            var response = new CommonResponse<SubcategoryResultDto>();
+            if (subcategoryId <= 0 || discountId <= 0)
+                return response.Fail("400", "Invalid data, discount Id and Category Id must be more than 0");
+
+            try
+            {
+                var subcategory = await _unitOfWork.Repository<Subcategory, int>().GetByIdAsync(subcategoryId);
+                if (subcategory == null)
+                    return response.Fail("404", "Subcategory Not Found");
+
+                var discount = await _unitOfWork.Repository<Discount, int>().GetByIdAsync(discountId);
+                if (discount == null)
+                    return response.Fail("404", "Discount Not Found");
+
+                subcategory.Discount = discount;
+                _unitOfWork.Repository<Subcategory, int>().Update(subcategory);
+                var mappedSubcategory = _mapper.Map<SubcategoryResultDto>(subcategory);
+
                 return response.Success(mappedSubcategory);
             }
             catch (Exception err)
