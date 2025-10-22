@@ -17,9 +17,10 @@ namespace Store.Repositories.Specification.ProductSpecification.SubcategorySpecs
             (!specs.CategoryId.HasValue || subcategory.CategoryId == specs.CategoryId.Value) 
             )
         {
-            
-            //AddInclude(category => category.Type);
-            //AddInclude(category => category.Brand);
+
+            AddInclude(subcategory => subcategory.Discount);
+            AddInclude(subcategory => subcategory.Category);
+
 
             //ApplyPagination((specs.PageIndex - 1) * specs.PageSize, specs.PageSize);
 

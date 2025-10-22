@@ -16,9 +16,9 @@ namespace Store.Repositories.Specification.ProductSpecification.CategorySpecs
 
             )
         {
-            //AddInclude(category => category.Type);
-            //AddInclude(category => category.Brand);
-            //ApplyPagination((specs.PageIndex - 1) * specs.PageSize, specs.PageSize);
+            AddInclude(category => category.Subcategories);
+            AddInclude(category => category.Discount);
+
             if (!string.IsNullOrEmpty(specs.Sort))
             {
                 switch (specs.Sort)

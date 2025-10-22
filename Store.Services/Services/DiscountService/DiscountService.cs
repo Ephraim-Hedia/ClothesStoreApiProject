@@ -126,7 +126,7 @@ namespace Store.Services.Services.DiscountService
                 return response.Fail("400", "Invalid Data, discount id must be greater than 0");
             if (dto == null)
                 return response.Fail("400", "Invalid Data, Discount data is Null");
-            if ((dto.Percentage <= 0 || dto.Percentage > 0) && dto.Percentage != null)
+            if ((dto.Percentage <= 0 || dto.Percentage > 100) && dto.Percentage != null)
                 return response.Fail("400", "Invalid Data, Percentage must be between 0 to 100");
             try
             {

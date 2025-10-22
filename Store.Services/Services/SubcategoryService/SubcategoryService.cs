@@ -106,7 +106,9 @@ namespace Store.Services.Services.SubcategoryService
             IReadOnlyList<Subcategory> subcategories;
             try
             {
-                subcategories = await _unitOfWork.Repository<Subcategory, int>().GetAllAsync();
+                var parameters = new SubcategorySpecsParameters();
+                var specs = new SubcategorySpecification(parameters);
+                subcategories = await _unitOfWork.Repository<Subcategory, int>().GetAllWithSpecificationAsync(specs);
                 if(!subcategories.Any())
                     return response.Fail("404", "No SubCategories Found");
                 var mappedSubcategories = _mapper.Map<IReadOnlyList<SubcategoryResultDto>>(subcategories);
@@ -122,12 +124,13 @@ namespace Store.Services.Services.SubcategoryService
         public async Task<CommonResponse<SubcategoryResultDto>> GetSubcategoryByIdAsync(int subcategoryId)
         {
             var response = new CommonResponse<SubcategoryResultDto>();
-            Subcategory subcategory;
+        
             if (subcategoryId <= 0)
                 return response.Fail("400", "Invalid Data, Subcategory Id must be greater than 0");
             try
             {
-                subcategory = await _unitOfWork.Repository<Subcategory, int>().GetByIdAsync(subcategoryId);
+                var specs = new SubcategorySpecificationById(subcategoryId);
+                var subcategory = await _unitOfWork.Repository<Subcategory, int>().GetByIdWithSpecificationAsync(specs);
                 if (subcategory == null)
                     return response.Fail("404", "SubCategory Not Found");
                 var mappedSubcategory = _mapper.Map<SubcategoryResultDto>(subcategory);
@@ -159,7 +162,8 @@ namespace Store.Services.Services.SubcategoryService
             try
             {
                 // Get the Subcategory to be updated
-                subcategory = await _unitOfWork.Repository<Subcategory, int>().GetByIdAsync(subcategoryId);
+                var specs = new SubcategorySpecificationById(subcategoryId);
+                subcategory = await _unitOfWork.Repository<Subcategory, int>().GetByIdWithSpecificationAsync(specs);
                 if (subcategory == null)
                     return response.Fail("404", "SubCategory Not Found");
 
@@ -168,8 +172,8 @@ namespace Store.Services.Services.SubcategoryService
                 
                 if (!string.IsNullOrEmpty(dto.Name))
                 {
-                    var specs = new SubcategorySpecification(dto.Name);
-                    var isExistingName = await _unitOfWork.Repository<Subcategory, int>().GetByIdWithSpecificationAsync(specs);
+                    var Namespecs = new SubcategorySpecification(dto.Name);
+                    var isExistingName = await _unitOfWork.Repository<Subcategory, int>().GetByIdWithSpecificationAsync(Namespecs);
                     if (isExistingName != null)
                         return response.Fail("400", "Invalid Data, Subcategory Name is already Exist");
                     subcategory.Name = dto.Name;
@@ -182,7 +186,7 @@ namespace Store.Services.Services.SubcategoryService
                 {
                     var category = await _unitOfWork.Repository<Category, int>().GetByIdAsync(dto.CategoryId.Value);
                     if (category == null)
-                        return response.Fail("400", "Subcategory not found, cannot update Subcategory");
+                        return response.Fail("400", "Category Id not found, cannot update Subcategory");
                     subcategory.CategoryId = category.Id;
                 }
 

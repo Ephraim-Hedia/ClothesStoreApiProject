@@ -46,6 +46,9 @@ namespace Store.Services.Services.ProductService.Dtos
                 // Map ProductCreateDto → Product
                 CreateMap<ProductCreateDto, Product>()
                     .ForMember(dest => dest.Images, opt => opt.Ignore());
+                // Map ProductUpdateDto → Product
+                CreateMap<ProductUpdateDto, Product>()
+                    .ForMember(dest => dest.Images, opt => opt.Ignore());
 
         }
     }

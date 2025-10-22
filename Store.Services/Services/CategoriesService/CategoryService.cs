@@ -96,7 +96,9 @@ namespace Store.Services.Services.CategoriesService
             var response = new CommonResponse<IReadOnlyList<CategoryResultDto>>();
             try
             {
-                categories = await _unitOfWork.Repository<Category, int>().GetAllAsync();
+                var paramters = new CategorySpecsParameters();
+                var specs = new CategorySpecification(paramters);
+                categories = await _unitOfWork.Repository<Category, int>().GetAllWithSpecificationAsync(specs);
                 if (!categories.Any())
                     return response.Fail("404", "No Categories Found");
                 var mappedCategories = _mapper.Map<IReadOnlyList<CategoryResultDto>>(categories);
@@ -112,13 +114,14 @@ namespace Store.Services.Services.CategoriesService
 
         public async Task<CommonResponse<CategoryResultDto>> GetCategoryByIdAsync(int categoryId)
         {
-            Category category;
+            
             var response = new CommonResponse<CategoryResultDto>();
             if (categoryId <= 0)
                 return response.Fail("400", "Invalid Data, CategoryId must be greater than 0");
             try
             {
-                category = await _unitOfWork.Repository<Category, int>().GetByIdAsync(categoryId);
+                var specs = new CategorySpecificationWithId(categoryId);
+                var category = await _unitOfWork.Repository<Category, int>().GetByIdWithSpecificationAsync(specs);
                 if(category == null)
                     return response.Fail("404", "Category Not Found");
                 var mappedCategory = _mapper.Map<CategoryResultDto>(category);
@@ -142,15 +145,15 @@ namespace Store.Services.Services.CategoriesService
             
             try
             {
-                
-                category = await _unitOfWork.Repository<Category, int>().GetByIdAsync(categoryId);
+                var specs = new CategorySpecificationWithId(categoryId);
+                category = await _unitOfWork.Repository<Category, int>().GetByIdWithSpecificationAsync(specs);
                 if(category == null)
                     return response.Fail("404", "Category Not Found");
 
                 if(!string.IsNullOrEmpty(dto.Name))
                 {
-                    var specs = new CategorySpecification(dto.Name);
-                    var isExistingName = await _unitOfWork.Repository<Category, int>().GetByIdWithSpecificationAsync(specs);
+                    var NameSpecs = new CategorySpecification(dto.Name);
+                    var isExistingName = await _unitOfWork.Repository<Category, int>().GetByIdWithSpecificationAsync(NameSpecs);
                     if(isExistingName == null)
                         category.Name = dto.Name;
                     else
