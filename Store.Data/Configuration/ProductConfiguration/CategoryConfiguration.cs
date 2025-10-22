@@ -27,11 +27,11 @@ namespace Store.Data.Configuration.ProductConfiguration
                 .HasForeignKey(p => p.CategoryId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Optional Discount
-            entity.HasOne(c => c.Discount)
-                .WithMany()
-                .HasForeignKey(c => c.DiscountId)
-                .OnDelete(DeleteBehavior.SetNull);
+            //// Optional Discount
+            //entity.HasOne(c => c.Discount)
+            //    .WithMany()
+            //    .HasForeignKey(c => c.DiscountId)
+            //    .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

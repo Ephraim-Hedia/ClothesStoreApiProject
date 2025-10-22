@@ -11,6 +11,7 @@ namespace Store.Repositories.Interfaces
         Task<int> CountWithSpecificationAsync(ISpecification<TEntity> specs);
         Task AddAsync(TEntity entity);
         void Update(TEntity entity);
+        void UpdateRange(ICollection<TEntity> entities);
         void Delete(TEntity entity);
         void DeleteRange(ICollection<TEntity> entities);
 

@@ -35,11 +35,11 @@ namespace Store.Data.Configuration.ProductConfiguration
                 .HasForeignKey(p => p.SubcategoryId)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            // Discount
-            entity.HasOne(p => p.Discount)
-                .WithMany()
-                .HasForeignKey(p => p.DiscountId)
-                .OnDelete(DeleteBehavior.SetNull);
+            //// Discount
+            //entity.HasOne(p => p.Discount)
+            //    .WithMany()
+            //    .HasForeignKey(p => p.DiscountId)
+            //    .OnDelete(DeleteBehavior.SetNull);
 
             // --------------------------------------------
             // 🔹 Product ↔ ProductColorJoin

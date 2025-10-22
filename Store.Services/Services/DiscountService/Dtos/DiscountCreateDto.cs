@@ -10,5 +10,7 @@ namespace Store.Services.Services.DiscountService.Dtos
         [Required]
         public decimal Percentage { get; set; }
 
+        public List<int>? CategoryIds { get; set; }
+
     }
 }

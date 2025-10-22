@@ -15,11 +15,11 @@ namespace Store.Data.Configuration.ProductConfiguration
             entity.Property(sc => sc.Description)
                 .HasMaxLength(500);
 
-            // Optional Discount
-            entity.HasOne(sc => sc.Discount)
-                .WithMany()
-                .HasForeignKey(sc => sc.DiscountId)
-                .OnDelete(DeleteBehavior.SetNull);
+            //// Optional Discount
+            //entity.HasOne(sc => sc.Discount)
+            //    .WithMany()
+            //    .HasForeignKey(sc => sc.DiscountId)
+            //    .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

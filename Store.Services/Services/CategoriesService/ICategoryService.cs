@@ -7,6 +7,9 @@ namespace Store.Services.Services.CategoriesService
     {
         Task<CommonResponse<CategoryResultDto>> CreateCategoryAsync(CategoryCreateDto dto);
         Task<CommonResponse<CategoryResultDto>> UpdateCategoryAsync(int categoryId, CategoryUpdateDto dto);
+        Task<CommonResponse<CategoryResultDto>> UpdateCategoryWithNewDiscountAsync(int categoryId, int discountId);
+        Task<CommonResponse<bool>> UpdateCategoriesWithNewDiscountAsync(List<int> categoryId, int discountId);
+
 
         Task<CommonResponse<CategoryResultDto>> GetCategoryByIdAsync(int categoryId);
         Task<CommonResponse<IReadOnlyList<CategoryResultDto>>> GetAllCategoriesAsync();

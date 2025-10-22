@@ -134,6 +134,7 @@ namespace Store.Services.Services.CategoriesService
             }
         }
 
+
         public async Task<CommonResponse<CategoryResultDto>> UpdateCategoryAsync(int categoryId, CategoryUpdateDto dto)
         {
             var response = new CommonResponse<CategoryResultDto>();
@@ -172,6 +173,68 @@ namespace Store.Services.Services.CategoriesService
                 _logger.LogError(err.Message);
                 throw;
             }
+        }
+        public async Task<CommonResponse<bool>> UpdateCategoriesWithNewDiscountAsync(List<int> categoryIds, int discountId)
+        {
+            var response = new CommonResponse<bool>();
+            if (discountId <= 0)
+                return response.Fail("400", "Discount Id Must be more than 0");
+            if (!categoryIds.Any() || categoryIds == null)
+                return response.Fail("400", "Category Ids is null or empty");
+
+            try
+            {
+                var discount = await _unitOfWork.Repository<Discount, int>().GetByIdAsync(discountId);
+                if (discount == null)
+                    return response.Fail("404", "Not found Discount");
+                foreach (var categoryId in categoryIds)
+                {
+                    var result = await UpdateCategoryWithNewDiscountAsync(categoryId, discountId);
+                    if (!result.IsSuccess)
+                    {
+                        response.Errors.Code = result.Errors.Code;
+                        response.Errors.Message = result.Errors.Message;
+                        return response;
+                    }
+                }
+                return response.Success(true);
+            }
+            catch (Exception err)
+            {
+                _logger.LogError(err.Message);
+                throw;
+            }
+        }
+
+        public async Task<CommonResponse<CategoryResultDto>> UpdateCategoryWithNewDiscountAsync(int categoryId, int discountId)
+        {
+            var response = new CommonResponse<CategoryResultDto>();
+            if (categoryId <= 0 || discountId <= 0)
+                return response.Fail("400", "Invalid data, discount Id and Category Id must be more than 0");
+
+            try
+            {
+                var category = await _unitOfWork.Repository<Category, int>().GetByIdAsync(categoryId);
+                if (category == null)
+                    return response.Fail("404", "Category Not Found");
+
+                var discount = await _unitOfWork.Repository<Discount, int>().GetByIdAsync(discountId);
+                if (discount == null)
+                    return response.Fail("404", "Discount Not Found");
+
+                category.Discount = discount;
+                _unitOfWork.Repository<Category, int>().Update(category);
+                await _unitOfWork.CompleteAsync();
+                var mappedCategory = _mapper.Map<CategoryResultDto>(category);
+
+                return response.Success(mappedCategory);
+            }
+            catch (Exception err)
+            {
+                _logger.LogError(err.Message);
+                throw;
+            }
+
         }
     }
 }

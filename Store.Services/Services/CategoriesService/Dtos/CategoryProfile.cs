@@ -8,11 +8,14 @@ namespace Store.Services.Services.CategoriesService.Dtos
         public CategoryProfile()
         {
             CreateMap<CategoryCreateDto, Category>().ReverseMap();
-            CreateMap<CategoryResultDto , Category>()
-                .ForMember(dest => dest.Discount , option=> option.MapFrom(src => src.Discount))
-                .ForMember(dest => dest.Subcategories, option => option.MapFrom(src => src.Subcategories))
 
-                .ReverseMap();
+            CreateMap<Category, CategoryResultDto>()
+               .ForMember(dest => dest.Discount, opt =>
+                    opt.MapFrom(src => src.Discount != null ? src.Discount : null))
+               .ForMember(dest => dest.Subcategories, opt => 
+                    opt.MapFrom(src => src.Subcategories != null ? src.Subcategories : null))
+               .ReverseMap();
+
             CreateMap<Category_DiscountResultDto, Discount>().ReverseMap();
             CreateMap<Category_SubcategoryResultDto, Subcategory>().ReverseMap();
 

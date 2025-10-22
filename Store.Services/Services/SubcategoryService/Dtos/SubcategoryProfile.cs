@@ -9,7 +9,8 @@ namespace Store.Services.Services.SubcategoryService.Dtos
         {
             CreateMap<Subcategory , SubcategoryCreateDto>().ReverseMap();
             CreateMap<Subcategory, SubcategoryResultDto>()
-                .ForMember(dest => dest.Discount , opt => opt.MapFrom(dist => dist.Discount))
+                .ForMember(dest => dest.Discount , opt => 
+                    opt.MapFrom(dist => dist.Discount != null ? dist.Discount : null))
                 .ForMember(dest => dest.Category, opt => opt.MapFrom(dist => dist.Category))
                 .ReverseMap();
             

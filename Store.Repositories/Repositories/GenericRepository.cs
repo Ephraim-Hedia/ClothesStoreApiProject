@@ -31,6 +31,9 @@ namespace Store.Repositories.Repositories
         public void DeleteRange(ICollection<TEntity> entities)
             => _context.Set<TEntity>().RemoveRange(entities);
 
+        public void UpdateRange(ICollection<TEntity> entities)
+            => _context.Set<TEntity>().UpdateRange(entities);
+
         public async Task<IReadOnlyList<TEntity>> GetAllWithSpecificationAsync(ISpecification<TEntity> specs)
             => await ApplySpecification(specs).ToListAsync();
         public async Task<TEntity> GetByIdWithSpecificationAsync(ISpecification<TEntity> specs)
