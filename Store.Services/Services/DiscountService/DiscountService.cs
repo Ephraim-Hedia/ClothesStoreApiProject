@@ -66,26 +66,36 @@ namespace Store.Services.Services.DiscountService
                 await _unitOfWork.CompleteAsync();
 
                 // Apply Discount On Categories
-                var categoriesResult = await _categoryService.UpdateCategoriesWithNewDiscountAsync(dto.CategoryIds, discount.Id , useExistingTransaction: true);
-                if (!categoriesResult.IsSuccess)
+                if(dto.CategoryIds != null && dto.CategoryIds.Any())
                 {
-                    await _unitOfWork.RollbackTransactionAsync();
-                    return response.Fail(categoriesResult.Errors.Code, "Error while applying discount to Categories: " + categoriesResult.Errors.Message); ;
+                    var categoriesResult = await _categoryService.UpdateCategoriesWithNewDiscountAsync(dto.CategoryIds, discount.Id, useExistingTransaction: true);
+                    if (!categoriesResult.IsSuccess)
+                    {
+                        await _unitOfWork.RollbackTransactionAsync();
+                        return response.Fail(categoriesResult.Errors.Code, "Error while applying discount to Categories: " + categoriesResult.Errors.Message); ;
+                    }
                 }
-                // Apply Discount On Subcategories
-                var subcategoriesResult = await _subcategoryService.UpdateSubcategoriesWithNewDiscountAsync(dto.SubcategoryIds, discount.Id, useExistingTransaction: true);
-                if (!subcategoriesResult.IsSuccess)
+                if (dto.SubcategoryIds != null && dto.SubcategoryIds.Any())
                 {
-                    await _unitOfWork.RollbackTransactionAsync();
-                    return response.Fail(subcategoriesResult.Errors.Code, "Error while applying discount to Subcategories: " + subcategoriesResult.Errors.Message);
+                    // Apply Discount On Subcategories
+                    var subcategoriesResult = await _subcategoryService.UpdateSubcategoriesWithNewDiscountAsync(dto.SubcategoryIds, discount.Id, useExistingTransaction: true);
+                    if (!subcategoriesResult.IsSuccess)
+                    {
+                        await _unitOfWork.RollbackTransactionAsync();
+                        return response.Fail(subcategoriesResult.Errors.Code, "Error while applying discount to Subcategories: " + subcategoriesResult.Errors.Message);
+                    }
                 }
-                // Apply Discount On Subcategories
-                var productsResult = await _productService.UpdateProductsWithNewDiscountAsync(dto.ProductIds, discount.Id, useExistingTransaction: true);
-                if (!productsResult.IsSuccess)
+                if (dto.ProductIds != null && dto.ProductIds.Any())
                 {
-                    await _unitOfWork.RollbackTransactionAsync();
-                    return response.Fail(productsResult.Errors.Code, "Error while applying discount to Products: " + productsResult.Errors.Message);
+                    // Apply Discount On Subcategories
+                    var productsResult = await _productService.UpdateProductsWithNewDiscountAsync(dto.ProductIds, discount.Id, useExistingTransaction: true);
+                    if (!productsResult.IsSuccess)
+                    {
+                        await _unitOfWork.RollbackTransactionAsync();
+                        return response.Fail(productsResult.Errors.Code, "Error while applying discount to Products: " + productsResult.Errors.Message);
+                    }
                 }
+                    
                 // Everything succeeded — now save all
                 await _unitOfWork.CompleteAsync();
                 await _unitOfWork.CommitTransactionAsync();

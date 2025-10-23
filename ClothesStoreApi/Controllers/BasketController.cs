@@ -22,23 +22,21 @@ namespace Store.Api.Controllers
         public async Task<IActionResult> GetBasket()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(userId))
-                return Unauthorized(new { Message = "Invalid or missing token." });
+            Request.Headers.TryGetValue("x-fingerPrint", out var fingerPrint);
 
-            var result = await _basketService.GetUserBasketAsync(userId);
+            var result = await _basketService.GetUserBasketAsync(userId, fingerPrint);
             return result.IsSuccess ? Ok(result) : result.Errors.Code == "400" ?
                  BadRequest(result) : NotFound(result);
         }
 
         [HttpPost]
         [Route("")]
-        public async Task<IActionResult> AddItem( BasketItemCreateDto dto)
+        public async Task<IActionResult> AddItem(BasketItemCreateDto dto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(userId))
-                return Unauthorized(new { Message = "Invalid or missing token." });
+            Request.Headers.TryGetValue("x-fingerPrint", out var fingerPrint);
 
-            var result = await _basketService.AddItemAsync(userId , dto);
+            var result = await _basketService.AddItemAsync(userId, fingerPrint, dto);
             return result.IsSuccess ? Ok(result) : BadRequest(result);
         }
 
@@ -47,10 +45,9 @@ namespace Store.Api.Controllers
         public async Task<IActionResult> RemoveItem(int itemId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(userId))
-                return Unauthorized(new { Message = "Invalid or missing token." });
+            Request.Headers.TryGetValue("x-fingerPrint", out var fingerPrint);
 
-            var result = await _basketService.RemoveItemAsync(userId, itemId);
+            var result = await _basketService.RemoveItemAsync(userId, fingerPrint, itemId);
             return result.IsSuccess ? Ok(result) : result.Errors.Code == "400" ?
                  BadRequest(result) : NotFound(result);
         }
@@ -60,10 +57,9 @@ namespace Store.Api.Controllers
         public async Task<IActionResult> UpdateQuantity(BasketUpdateDto dto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(userId))
-                return Unauthorized(new { Message = "Invalid or missing token." });
+            Request.Headers.TryGetValue("x-fingerPrint", out var fingerPrint);
 
-            var result = await _basketService.UpdateQuantityAsync(userId, dto.ItemId , dto.Quantity);
+            var result = await _basketService.UpdateQuantityAsync(userId, fingerPrint, dto.ItemId , dto.Quantity);
             return result.IsSuccess ? Ok(result) : result.Errors.Code == "400" ?
                  BadRequest(result) : NotFound(result);
         }
@@ -73,10 +69,9 @@ namespace Store.Api.Controllers
         public async Task<IActionResult> ClearBasket()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(userId))
-                return Unauthorized(new { Message = "Invalid or missing token." });
+            Request.Headers.TryGetValue("x-fingerPrint", out var fingerPrint);
 
-            var result = await _basketService.ClearBasketAsync(userId);
+            var result = await _basketService.ClearBasketAsync(userId, fingerPrint);
             return result.IsSuccess ? Ok(result) : result.Errors.Code == "400" ?
                  BadRequest(result) : NotFound(result);
         }

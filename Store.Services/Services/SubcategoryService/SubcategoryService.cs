@@ -217,10 +217,10 @@ namespace Store.Services.Services.SubcategoryService
             if (discountId <= 0)
                 return response.Fail("400", "Discount Id Must be more than 0");
             if (subcategoryIds == null || !subcategoryIds.Any())
-                return response.Fail("400", "Category Ids is null or empty");
+                return response.Fail("400", "Subcategory Ids is null or empty");
 
             if (!useExistingTransaction)
-                await _unitOfWork.BeginTransactionAsync(); // only if not already in one
+                await _unitOfWork.BeginTransactionAsync(); // only if not already in one 
 
             try
             {

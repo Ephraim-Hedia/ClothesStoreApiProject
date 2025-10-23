@@ -29,45 +29,58 @@ namespace Store.Services.Services.BasketService
             _userService = userService;
         }
 
-        public async Task<CommonResponse<BasketResultDto>> GetUserBasketAsync(string userId)
+        public async Task<CommonResponse<BasketResultDto>> GetUserBasketAsync(string? userId,string? fingerPrint)
         {
+            Basket basket = new Basket();
             var response = new CommonResponse<BasketResultDto>();
-            if (string.IsNullOrEmpty(userId))
-                return response.Fail("400","Invalid Data, User Id is Null");
+            if (string.IsNullOrEmpty(userId) && string.IsNullOrEmpty(fingerPrint))
+                return response.Fail("400","Invalid Data, User Id and finger Print are Null");
 
-            // 🧩 Validate User existence
-            var result = await _userService.GetUserByIdAsync(userId);
-            if (!result.IsSuccess)
-                return response.Fail("404", $"User with ID {userId} not found");
+            if(!string.IsNullOrEmpty(userId))
+            {
+                // 🧩 Validate User existence
+                var result = await _userService.GetUserByIdAsync(userId);
+                if (!result.IsSuccess)
+                    return response.Fail("404", $"User with ID {userId} not found");
+                basket = await LoadUserBasketByUserIdAsync(userId);
+            }
+            else
+                basket = await LoadUserBasketByFingerPrintIdAsync(fingerPrint);
 
-            var basket = await LoadUserBasketAsync(userId);
+
             if (basket == null)
             {
-                basket = new Basket { UserId = userId };
+                basket = new Basket { UserId = userId,FingerPrint=fingerPrint };
                 await _unitOfWork.Repository<Basket, int>().AddAsync(basket);
                 await _unitOfWork.CompleteAsync();
                 _logger.LogInformation("New basket created for user {UserId}", userId);
             }
             return response.Success(_mapper.Map<BasketResultDto>(basket));
         }
-        public async Task<CommonResponse<BasketResultDto>> AddItemAsync(string userId, BasketItemCreateDto dto)
+        public async Task<CommonResponse<BasketResultDto>> AddItemAsync(string? userId, string? fingerPrint, BasketItemCreateDto dto)
         {
             var response = new CommonResponse<BasketResultDto>();
-            if (string.IsNullOrEmpty(userId))
-                return response.Fail("400", "Invalid Data, user Id is Null");
+            var basket = new Basket();
+            if (string.IsNullOrEmpty(userId) && string.IsNullOrEmpty(fingerPrint))
+                return response.Fail("400", "Invalid Data, User Id and finger Print are Null");
 
             if (dto == null)
                 return response.Fail("400", "Invalid Data, Basket Item is Null");
             if(dto.Quantity <=0 )
                 return response.Fail("400", "Invalid Data, Quantity must be more than 0");
 
-            // 🧩 Validate User existence
-            var result = await _userService.GetUserByIdAsync(userId);
-            if (!result.IsSuccess)
-                return response.Fail("404", $"User with ID {userId} not found");
+            if (!string.IsNullOrEmpty(userId))
+            {
+                // 🧩 Validate User existence
+                var result = await _userService.GetUserByIdAsync(userId);
+                if (!result.IsSuccess)
+                    return response.Fail("404", $"User with ID {userId} not found");
+                // 🧩 Load or create basket
+                basket = await LoadUserBasketByUserIdAsync(userId);
+            }
+            else
+                basket = await LoadUserBasketByFingerPrintIdAsync(fingerPrint);
 
-            // 🧩 Load or create basket
-            var basket = await LoadUserBasketAsync(userId);
             if (basket == null)
             {
                 basket = new Basket { UserId = userId };
@@ -110,19 +123,26 @@ namespace Store.Services.Services.BasketService
             await _unitOfWork.CompleteAsync();
             return response.Success(_mapper.Map<BasketResultDto>(basket));
         }
-        public async Task<CommonResponse<bool>> ClearBasketAsync(string userId)
+        public async Task<CommonResponse<bool>> ClearBasketAsync(string? userId, string? fingerPrint)
         {
-            
+            Basket basket = new Basket();
             var response = new CommonResponse<bool>();
-            if (string.IsNullOrEmpty(userId))
-                return response.Fail("400", "Invalid Data, User Id is null");
+            if (string.IsNullOrEmpty(userId) && string.IsNullOrEmpty(fingerPrint))
+                return response.Fail("400", "Invalid Data, User Id and finger Print are Null");
 
-            // 🧩 Validate User existence
-            var result = await _userService.GetUserByIdAsync(userId);
-            if (!result.IsSuccess)
-                return response.Fail("404", $"User with ID {userId} not found");
+            if (!string.IsNullOrEmpty(userId))
+            {
+                // 🧩 Validate User existence
+                var result = await _userService.GetUserByIdAsync(userId);
+                if (!result.IsSuccess)
+                    return response.Fail("404", $"User with ID {userId} not found");
+                // 🧩 Load or create basket
+                basket = await LoadUserBasketByUserIdAsync(userId);
+            }
+            else
+                basket = await LoadUserBasketByFingerPrintIdAsync(fingerPrint);
 
-            var basket = await LoadUserBasketAsync(userId);
+
             if (basket == null)
                 return response.Fail("404", "Not Found basket");
 
@@ -135,21 +155,29 @@ namespace Store.Services.Services.BasketService
 
             return response.Success(true);
         }
-        public async Task<CommonResponse<bool>> RemoveItemAsync(string userId, int itemId)
+        public async Task<CommonResponse<bool>> RemoveItemAsync(string? userId, string? fingerPrint, int itemId)
         {
+            Basket basket = new Basket();
+
             var response = new CommonResponse<bool>();
-            if (string.IsNullOrEmpty(userId))
-                return response.Fail("400", "Invalid Data, User Id is Null");
-
-            // 🧩 Validate User existence
-            var result = await _userService.GetUserByIdAsync(userId);
-            if (!result.IsSuccess)
-                return response.Fail("404", $"User with ID {userId} not found");
-
             if (itemId <= 0)
                 return response.Fail("400", "Invalid Data, Product Id must be more than 0");
 
-            var basket = await LoadUserBasketAsync(userId);
+            if (string.IsNullOrEmpty(userId) && string.IsNullOrEmpty(fingerPrint))
+                return response.Fail("400", "Invalid Data, User Id and finger Print are Null");
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                // 🧩 Validate User existence
+                var result = await _userService.GetUserByIdAsync(userId);
+                if (!result.IsSuccess)
+                    return response.Fail("404", $"User with ID {userId} not found");
+                // 🧩 Load or create basket
+                basket = await LoadUserBasketByUserIdAsync(userId);
+            }
+            else
+                basket = await LoadUserBasketByFingerPrintIdAsync(fingerPrint);
+
 
             if (basket == null)
                 return response.Fail("404", "Not Found Basket");
@@ -163,24 +191,31 @@ namespace Store.Services.Services.BasketService
             _logger.LogInformation("Removed Basket Item {ItemId} from basket for user {UserId}", itemId, userId);
             return response.Success(true);
         }
-        public async Task<CommonResponse<BasketResultDto>> UpdateQuantityAsync(string userId, int itemId, int quantity)
+        public async Task<CommonResponse<BasketResultDto>> UpdateQuantityAsync(string? userId, string? fingerPrint, int itemId, int quantity)
         {
             var response = new CommonResponse<BasketResultDto>();
+            Basket basket = new Basket();
 
-            if (string.IsNullOrEmpty(userId))
-                return response.Fail("400", "Invalid Data, User Id is Null");
-            // 🧩 Validate User existence
-            var result = await _userService.GetUserByIdAsync(userId);
-            if (!result.IsSuccess)
-                return response.Fail("404", $"User with ID {userId} not found");
+            if (string.IsNullOrEmpty(userId) && string.IsNullOrEmpty(fingerPrint))
+                return response.Fail("400", "Invalid Data, User Id and finger Print are Null");
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                // 🧩 Validate User existence
+                var result = await _userService.GetUserByIdAsync(userId);
+                if (!result.IsSuccess)
+                    return response.Fail("404", $"User with ID {userId} not found");
+                // 🧩 Load or create basket
+                basket = await LoadUserBasketByUserIdAsync(userId);
+            }
+            else
+                basket = await LoadUserBasketByFingerPrintIdAsync(fingerPrint);
 
             if (itemId <= 0)
                 return response.Fail("400", "Invalid Data, Item Id must be more than 0");
             if (quantity < 0)
                 return response.Fail("400", "Invalid Data, quantity must be more than 0");
 
-            
-            var basket = await LoadUserBasketAsync(userId);
             if (basket == null)
                 return response.Fail("404", "Basket Not Found");
 
@@ -203,9 +238,14 @@ namespace Store.Services.Services.BasketService
             await _unitOfWork.CompleteAsync();
             return response.Success(_mapper.Map<BasketResultDto>(basket));
         }
-        private async Task<Basket?> LoadUserBasketAsync(string userId)
+        private async Task<Basket?> LoadUserBasketByUserIdAsync(string userId)
         {
             var spec = new BasketSpecification(userId);
+            return await _unitOfWork.Repository<Basket, int>().GetByIdWithSpecificationAsync(spec);
+        }
+        private async Task<Basket?> LoadUserBasketByFingerPrintIdAsync(string fingerPrint)
+        {
+            var spec = new BasketSpecificationByFingerPrint(fingerPrint);
             return await _unitOfWork.Repository<Basket, int>().GetByIdWithSpecificationAsync(spec);
         }
     }

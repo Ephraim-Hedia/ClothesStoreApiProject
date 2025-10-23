@@ -5,10 +5,10 @@ namespace Store.Services.Services.BasketService
 {
     public interface IBasketService
     {
-        Task<CommonResponse<BasketResultDto>> GetUserBasketAsync(string userId);
-        Task<CommonResponse<BasketResultDto>> AddItemAsync(string userId, BasketItemCreateDto dto);
-        Task<CommonResponse<bool>> RemoveItemAsync(string userId, int productId);
-        Task<CommonResponse<BasketResultDto>> UpdateQuantityAsync(string userId, int productId, int quantity);
-        Task<CommonResponse<bool>> ClearBasketAsync(string userId);
+        Task<CommonResponse<BasketResultDto>> GetUserBasketAsync(string? userId, string? fingerPrint);
+        Task<CommonResponse<BasketResultDto>> AddItemAsync(string? userId, string? fingerPrint, BasketItemCreateDto dto);
+        Task<CommonResponse<bool>> RemoveItemAsync(string? userId, string? fingerPrint, int itemId);
+        Task<CommonResponse<BasketResultDto>> UpdateQuantityAsync(string? userId, string? fingerPrint, int itemId, int quantity);
+        Task<CommonResponse<bool>> ClearBasketAsync(string? userId, string? fingerPrint);
     }
 }
