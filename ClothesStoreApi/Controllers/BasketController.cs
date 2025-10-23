@@ -3,6 +3,7 @@ using Store.Services.Services.AccountService.Dtos;
 using Store.Services.Services.BasketService;
 using Store.Services.Services.BasketService.Dtos;
 using Store.Services.Services.CategoriesService.Dtos;
+using System.Security.Claims;
 
 namespace Store.Api.Controllers
 {
@@ -17,44 +18,64 @@ namespace Store.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{userId}")]
-        public async Task<IActionResult> GetBasket(string userId)
+        [Route("")]
+        public async Task<IActionResult> GetBasket()
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized(new { Message = "Invalid or missing token." });
+
             var result = await _basketService.GetUserBasketAsync(userId);
             return result.IsSuccess ? Ok(result) : result.Errors.Code == "400" ?
                  BadRequest(result) : NotFound(result);
         }
 
         [HttpPost]
-        [Route("{userId}/add")]
-        public async Task<IActionResult> AddItem(string userId, BasketItemCreateDto dto)
+        [Route("")]
+        public async Task<IActionResult> AddItem( BasketItemCreateDto dto)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized(new { Message = "Invalid or missing token." });
+
             var result = await _basketService.AddItemAsync(userId , dto);
             return result.IsSuccess ? Ok(result) : BadRequest(result);
         }
 
         [HttpDelete]
-        [Route("{userId}/remove/{productId}")]
-        public async Task<IActionResult> RemoveItem(string userId, int productId)
+        [Route("{itemId}")]
+        public async Task<IActionResult> RemoveItem(int itemId)
         {
-            var result = await _basketService.RemoveItemAsync(userId, productId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized(new { Message = "Invalid or missing token." });
+
+            var result = await _basketService.RemoveItemAsync(userId, itemId);
             return result.IsSuccess ? Ok(result) : result.Errors.Code == "400" ?
                  BadRequest(result) : NotFound(result);
         }
 
         [HttpPut]
-        [Route("{userId}/update/{productId}/{quantity}")]
-        public async Task<IActionResult> UpdateQuantity(string userId, int productId, int quantity)
+        [Route("")]
+        public async Task<IActionResult> UpdateQuantity(BasketUpdateDto dto)
         {
-            var result = await _basketService.UpdateQuantityAsync(userId, productId , quantity);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized(new { Message = "Invalid or missing token." });
+
+            var result = await _basketService.UpdateQuantityAsync(userId, dto.ItemId , dto.Quantity);
             return result.IsSuccess ? Ok(result) : result.Errors.Code == "400" ?
                  BadRequest(result) : NotFound(result);
         }
 
         [HttpDelete]
-        [Route("{userId}/clear")]
-        public async Task<IActionResult> ClearCard(string userId)
+        [Route("clear")]
+        public async Task<IActionResult> ClearBasket()
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized(new { Message = "Invalid or missing token." });
+
             var result = await _basketService.ClearBasketAsync(userId);
             return result.IsSuccess ? Ok(result) : result.Errors.Code == "400" ?
                  BadRequest(result) : NotFound(result);

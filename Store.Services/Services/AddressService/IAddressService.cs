@@ -10,5 +10,6 @@ namespace Store.Services.Services.AddressService
         Task<CommonResponse<IReadOnlyList<AddressResultDto>>> GetAddressesByUserIdAsync(string userId);
         Task<CommonResponse<AddressResultDto>> GetAddressByIdAsync(string userId, int addressId);
         Task<CommonResponse<bool>> DeleteAddressAsync(string userId, int addressId);
+        
     }
 }

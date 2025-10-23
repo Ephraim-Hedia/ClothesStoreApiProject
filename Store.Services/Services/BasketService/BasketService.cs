@@ -135,7 +135,7 @@ namespace Store.Services.Services.BasketService
 
             return response.Success(true);
         }
-        public async Task<CommonResponse<bool>> RemoveItemAsync(string userId, int productId)
+        public async Task<CommonResponse<bool>> RemoveItemAsync(string userId, int itemId)
         {
             var response = new CommonResponse<bool>();
             if (string.IsNullOrEmpty(userId))
@@ -146,7 +146,7 @@ namespace Store.Services.Services.BasketService
             if (!result.IsSuccess)
                 return response.Fail("404", $"User with ID {userId} not found");
 
-            if (productId <= 0)
+            if (itemId <= 0)
                 return response.Fail("400", "Invalid Data, Product Id must be more than 0");
 
             var basket = await LoadUserBasketAsync(userId);
@@ -154,16 +154,16 @@ namespace Store.Services.Services.BasketService
             if (basket == null)
                 return response.Fail("404", "Not Found Basket");
 
-            var basketItem = basket.BasketItems.FirstOrDefault(i => i.ProductId == productId);
+            var basketItem = basket.BasketItems.FirstOrDefault(i => i.Id == itemId);
             if (basketItem == null)
                 return response.Fail("404", "Basket Item not Found");
 
             _unitOfWork.Repository<BasketItem,int>().Delete(basketItem);
             await _unitOfWork.CompleteAsync();
-            _logger.LogInformation("Removed product {ProductId} from basket for user {UserId}", productId, userId);
+            _logger.LogInformation("Removed Basket Item {ItemId} from basket for user {UserId}", itemId, userId);
             return response.Success(true);
         }
-        public async Task<CommonResponse<BasketResultDto>> UpdateQuantityAsync(string userId, int productId, int quantity)
+        public async Task<CommonResponse<BasketResultDto>> UpdateQuantityAsync(string userId, int itemId, int quantity)
         {
             var response = new CommonResponse<BasketResultDto>();
 
@@ -174,8 +174,8 @@ namespace Store.Services.Services.BasketService
             if (!result.IsSuccess)
                 return response.Fail("404", $"User with ID {userId} not found");
 
-            if (productId <= 0)
-                return response.Fail("400", "Invalid Data, Product Id must be more than 0");
+            if (itemId <= 0)
+                return response.Fail("400", "Invalid Data, Item Id must be more than 0");
             if (quantity < 0)
                 return response.Fail("400", "Invalid Data, quantity must be more than 0");
 
@@ -184,21 +184,21 @@ namespace Store.Services.Services.BasketService
             if (basket == null)
                 return response.Fail("404", "Basket Not Found");
 
-            var basketItem = basket.BasketItems.FirstOrDefault(i => i.ProductId == productId);
+            var basketItem = basket.BasketItems.FirstOrDefault(i => i.Id == itemId);
             if (basketItem == null)
                 return response.Fail("404", "Basket Item Not Found");
 
             if (quantity == 0)
             {
                 _unitOfWork.Repository<BasketItem, int>().Delete(basketItem);
-                _logger.LogInformation("Removed product {ProductId} from basket for user {UserId}", productId, userId);
+                _logger.LogInformation("Removed Item {itemId} from basket for user {UserId}", itemId, userId);
             }
             
             else
             {
                 basketItem.Quantity = quantity;
                 _unitOfWork.Repository<BasketItem, int>().Update(basketItem);
-                _logger.LogInformation("Updated quantity of product {ProductId} to {Quantity} for user {UserId}", productId, quantity, userId);
+                _logger.LogInformation("Updated quantity of Item {ItemId} to {Quantity} for user {UserId}", itemId, quantity, userId);
             }
             await _unitOfWork.CompleteAsync();
             return response.Success(_mapper.Map<BasketResultDto>(basket));

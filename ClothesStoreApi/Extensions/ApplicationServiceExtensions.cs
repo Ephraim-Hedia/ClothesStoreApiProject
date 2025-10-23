@@ -26,6 +26,7 @@ using Store.Services.Services.BasketService;
 using Store.Services.Services.BasketService.Dtos;
 using Store.Services.Services.OrderService;
 using Store.Services.Services.OrderService.Dtos;
+using Store.Services.Services.DeliveryService;
 
 namespace Store.Api.Extensions
 {
@@ -49,16 +50,10 @@ namespace Store.Api.Extensions
             services.AddScoped<IAddressService, AddressService>();
             services.AddScoped<IBasketService, BasketService>();
             services.AddScoped<IOrderService, OrderService>();
-
-
-
-
+            services.AddScoped<IDeliveryService, DeliveryService>();
 
             services.AddScoped<EntityListValidator>();
             services.AddScoped<EntityValidator>();
-
-
-
 
             services.AddAutoMapper(typeof(ProductProfile));
             services.AddAutoMapper(typeof(ColorProfile));

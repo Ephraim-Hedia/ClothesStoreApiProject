@@ -174,7 +174,10 @@ namespace Store.Services.Services.CategoriesService
                 throw;
             }
         }
-        public async Task<CommonResponse<bool>> UpdateCategoriesWithNewDiscountAsync(List<int> categoryIds, int discountId, bool useExistingTransaction = false)
+        public async Task<CommonResponse<bool>> UpdateCategoriesWithNewDiscountAsync(
+            List<int> categoryIds,
+            int discountId,
+            bool useExistingTransaction = false)
         {
             var response = new CommonResponse<bool>();
             if (discountId <= 0)
@@ -182,16 +185,18 @@ namespace Store.Services.Services.CategoriesService
             if (!categoryIds.Any() || categoryIds == null)
                 return response.Fail("400", "Category Ids is null or empty");
 
-            if (!useExistingTransaction)
-                await _unitOfWork.BeginTransactionAsync(); // only if not already in one
+            
             try
             {
+                if (!useExistingTransaction)
+                    await _unitOfWork.BeginTransactionAsync(); // only if not already in one
+
                 var discount = await _unitOfWork.Repository<Discount, int>().GetByIdAsync(discountId);
                 if (discount == null)
                     return response.Fail("404", "Not found Discount");
                 foreach (var categoryId in categoryIds)
                 {
-                    var result = await UpdateCategoryWithNewDiscountAsync(categoryId, discountId);
+                    var result = await UpdateCategoryWithNewDiscountAsync(categoryId, discountId , true);
                     if (!result.IsSuccess)
                     {
                         response.Errors.Code = result.Errors.Code;
@@ -207,13 +212,17 @@ namespace Store.Services.Services.CategoriesService
             }
             catch (Exception err)
             {
-                await _unitOfWork.RollbackTransactionAsync();
+                if (!useExistingTransaction)
+                    await _unitOfWork.RollbackTransactionAsync();
                 _logger.LogError(err.Message);
                 throw;
             }
         }
 
-        public async Task<CommonResponse<CategoryResultDto>> UpdateCategoryWithNewDiscountAsync(int categoryId, int discountId)
+        public async Task<CommonResponse<CategoryResultDto>> UpdateCategoryWithNewDiscountAsync(
+            int categoryId,
+            int discountId,
+            bool useExistingTransaction = false)
         {
             var response = new CommonResponse<CategoryResultDto>();
             if (categoryId <= 0 || discountId <= 0)
@@ -221,6 +230,9 @@ namespace Store.Services.Services.CategoriesService
 
             try
             {
+                if (!useExistingTransaction)
+                    await _unitOfWork.BeginTransactionAsync();
+
                 var category = await _unitOfWork.Repository<Category, int>().GetByIdAsync(categoryId);
                 if (category == null)
                     return response.Fail("404", "Category Not Found");
@@ -231,12 +243,19 @@ namespace Store.Services.Services.CategoriesService
 
                 category.Discount = discount;
                 _unitOfWork.Repository<Category, int>().Update(category);
+                if (!useExistingTransaction)
+                {
+                    await _unitOfWork.CompleteAsync();
+                    await _unitOfWork.CommitTransactionAsync();
+                }
                 var mappedCategory = _mapper.Map<CategoryResultDto>(category);
 
                 return response.Success(mappedCategory);
             }
             catch (Exception err)
             {
+                if (!useExistingTransaction)
+                    await _unitOfWork.RollbackTransactionAsync();
                 _logger.LogError(err.Message);
                 throw;
             }

@@ -6,6 +6,7 @@ using Store.Repositories.Specification.ProductSpecification.ProductSpecs;
 using Store.Services.HandleResponse.CommonResponse;
 using Store.Services.Helper.Validation;
 using Store.Services.Services.ProductService.Dtos;
+using Store.Services.Services.SubcategoryService.Dtos;
 
 namespace Store.Services.Services.ProductService
 {
@@ -235,7 +236,12 @@ namespace Store.Services.Services.ProductService
             try
             {
                 var product = productResult.Entity;
-                _mapper.Map(dto, product);
+                // 1) Validate Category
+                // 2) Validate Subcategory
+                // 3) Validate discount
+                // 4) Validate Price 
+                if(dto.DiscountId != null && product != null)
+                    product.DiscountId = dto.DiscountId;
 
                 // Update join tables
                 if (dto.ProductColorIds?.Any() == true)
@@ -272,7 +278,91 @@ namespace Store.Services.Services.ProductService
                 throw;
             }
         }
-   
+
+        public async Task<CommonResponse<bool>> UpdateProductsWithNewDiscountAsync(
+            List<int> productIds,
+            int discountId,
+            bool useExistingTransaction)
+        {
+            var response = new CommonResponse<bool>();
+            if (discountId <= 0)
+                return response.Fail("400", "Discount Id Must be more than 0");
+            if (productIds == null || !productIds.Any())
+                return response.Fail("400", "Products Ids is null or empty");
+
+            if (!useExistingTransaction)
+                await _unitOfWork.BeginTransactionAsync(); // only if not already in one
+
+            try
+            {
+                var discount = await _unitOfWork.Repository<Discount, int>().GetByIdAsync(discountId);
+                if (discount == null)
+                    return response.Fail("404", "Not found Discount");
+
+                foreach (var productId in productIds)
+                {
+                    var result = await UpdateProductWithNewDiscountAsync(productId, discountId, true);
+                    if (!result.IsSuccess)
+                    {
+                        response.Errors.Code = result.Errors.Code;
+                        response.Errors.Message = result.Errors.Message;
+                        return response;
+                    }
+                }
+                await _unitOfWork.CompleteAsync();
+
+                if (!useExistingTransaction)
+                    await _unitOfWork.CommitTransactionAsync();
+                return response.Success(true);
+            }
+            catch (Exception err)
+            {
+                if (!useExistingTransaction)
+                    await _unitOfWork.RollbackTransactionAsync();
+                _logger.LogError(err.Message);
+                throw;
+            }
+        }
+        public async Task<CommonResponse<ProductResultDto>> UpdateProductWithNewDiscountAsync(
+            int productId,
+            int discountId,
+            bool useExistingTransaction = false)
+        {
+            var response = new CommonResponse<ProductResultDto>();
+            if (productId <= 0 || discountId <= 0)
+                return response.Fail("400", "Invalid data, discount Id and Product Id must be more than 0");
+
+            try
+            {
+                if (!useExistingTransaction)
+                    await _unitOfWork.BeginTransactionAsync();
+                var product = await _unitOfWork.Repository<Product, int>().GetByIdAsync(productId);
+                if (product == null)
+                    return response.Fail("404", "Product Not Found");
+
+                var discount = await _unitOfWork.Repository<Discount, int>().GetByIdAsync(discountId);
+                if (discount == null)
+                    return response.Fail("404", "Discount Not Found");
+
+                product.Discount = discount;
+                _unitOfWork.Repository<Product, int>().Update(product);
+                if (!useExistingTransaction)
+                {
+                    await _unitOfWork.CompleteAsync();
+                    await _unitOfWork.CommitTransactionAsync();
+                }
+                var mappedProduct = _mapper.Map<ProductResultDto>(product);
+                return response.Success(mappedProduct);
+            }
+            catch (Exception err)
+            {
+                if (!useExistingTransaction)
+                    await _unitOfWork.RollbackTransactionAsync();
+                _logger.LogError(err.Message);
+                throw;
+            }
+        }
+
     }
 }
 

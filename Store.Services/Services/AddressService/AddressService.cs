@@ -45,6 +45,9 @@ namespace Store.Services.Services.AddressService
                 var address = _mapper.Map<Address>(dto);
                 address.ApplicationUserId = user.Id;
                 user.Address ??= new List<Address>();
+                if(user.Address.Count >=3)
+                    return response.Fail("404", $"User with Id: {userId}, Have Max Limit of Addresses, try to remove one first, then add");
+
                 user.Address.Add(address);
 
                 await _userManager.UpdateAsync(user);

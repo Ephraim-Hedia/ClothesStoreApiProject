@@ -6,6 +6,7 @@ using Store.Repositories.Specification.ProductSpecification.DiscountSpecs;
 using Store.Services.HandleResponse.CommonResponse;
 using Store.Services.Services.CategoriesService;
 using Store.Services.Services.DiscountService.Dtos;
+using Store.Services.Services.ProductService;
 using Store.Services.Services.SubcategoryService;
 
 namespace Store.Services.Services.DiscountService
@@ -17,12 +18,15 @@ namespace Store.Services.Services.DiscountService
         private readonly ILogger _logger;
         private readonly ICategoryService _categoryService;
         private readonly ISubcategoryService _subcategoryService;
+        private readonly IProductService _productService;
+
         public DiscountService(
             IUnitOfWork unitOfWork,
             IMapper mapper,
             ILogger<DiscountService> logger,
             ICategoryService categoryService,
-            ISubcategoryService subcategoryService
+            ISubcategoryService subcategoryService,
+            IProductService productService
             )
         {
             _unitOfWork = unitOfWork;
@@ -30,6 +34,7 @@ namespace Store.Services.Services.DiscountService
             _logger = logger;
             _categoryService = categoryService;
             _subcategoryService = subcategoryService;
+            _productService = productService;
 
         }
         public async Task<CommonResponse<DiscountResultDto>> AddDiscountAsync(DiscountCreateDto dto)
@@ -61,18 +66,25 @@ namespace Store.Services.Services.DiscountService
                 await _unitOfWork.CompleteAsync();
 
                 // Apply Discount On Categories
-                var categoryResult = await _categoryService.UpdateCategoriesWithNewDiscountAsync(dto.CategoryIds, discount.Id , useExistingTransaction: true);
-                if (!categoryResult.IsSuccess)
+                var categoriesResult = await _categoryService.UpdateCategoriesWithNewDiscountAsync(dto.CategoryIds, discount.Id , useExistingTransaction: true);
+                if (!categoriesResult.IsSuccess)
                 {
                     await _unitOfWork.RollbackTransactionAsync();
-                    return response.Fail(categoryResult.Errors.Code, "Error while applying discount to Categories: " + categoryResult.Errors.Message); ;
+                    return response.Fail(categoriesResult.Errors.Code, "Error while applying discount to Categories: " + categoriesResult.Errors.Message); ;
                 }
                 // Apply Discount On Subcategories
-                var subcategoryResult = await _subcategoryService.UpdateSubcategoriesWithNewDiscountAsync(dto.SubcategoryIds, discount.Id, useExistingTransaction: true);
-                if (!subcategoryResult.IsSuccess)
+                var subcategoriesResult = await _subcategoryService.UpdateSubcategoriesWithNewDiscountAsync(dto.SubcategoryIds, discount.Id, useExistingTransaction: true);
+                if (!subcategoriesResult.IsSuccess)
                 {
                     await _unitOfWork.RollbackTransactionAsync();
-                    return response.Fail(subcategoryResult.Errors.Code, "Error while applying discount to Subcategories: " + subcategoryResult.Errors.Message);
+                    return response.Fail(subcategoriesResult.Errors.Code, "Error while applying discount to Subcategories: " + subcategoriesResult.Errors.Message);
+                }
+                // Apply Discount On Subcategories
+                var productsResult = await _productService.UpdateProductsWithNewDiscountAsync(dto.ProductIds, discount.Id, useExistingTransaction: true);
+                if (!productsResult.IsSuccess)
+                {
+                    await _unitOfWork.RollbackTransactionAsync();
+                    return response.Fail(productsResult.Errors.Code, "Error while applying discount to Products: " + productsResult.Errors.Message);
                 }
                 // Everything succeeded — now save all
                 await _unitOfWork.CompleteAsync();

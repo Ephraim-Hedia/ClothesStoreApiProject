@@ -11,7 +11,7 @@ namespace Store.Services.Services.SubcategoryService
         Task<CommonResponse<bool>> DeleteSubcategoryAsync(int subcategoryId);
         Task<CommonResponse<SubcategoryResultDto>> UpdateSubcategoryAsync(int subcategoryId, SubcategoryUpdateDto dto);
 
-        Task<CommonResponse<SubcategoryResultDto>> UpdateSubcategoryWithNewDiscountAsync(int subcategoryId, int discountId);
+        Task<CommonResponse<SubcategoryResultDto>> UpdateSubcategoryWithNewDiscountAsync(int subcategoryId, int discountId, bool useExistingTransaction);
         Task<CommonResponse<bool>> UpdateSubcategoriesWithNewDiscountAsync(List<int> subcategoryIds, int discountId ,bool useExistingTransaction);
 
     }

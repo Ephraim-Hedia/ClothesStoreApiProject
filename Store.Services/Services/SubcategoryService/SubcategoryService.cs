@@ -230,7 +230,7 @@ namespace Store.Services.Services.SubcategoryService
 
                 foreach (var subcategoryId in subcategoryIds)
                 {
-                    var result = await UpdateSubcategoryWithNewDiscountAsync(subcategoryId, discountId);
+                    var result = await UpdateSubcategoryWithNewDiscountAsync(subcategoryId, discountId, true);
                     if (!result.IsSuccess)
                     {
                         response.Errors.Code = result.Errors.Code;
@@ -246,20 +246,26 @@ namespace Store.Services.Services.SubcategoryService
             }
             catch (Exception err)
             {
-                await _unitOfWork.RollbackTransactionAsync();
+                if (!useExistingTransaction)
+                    await _unitOfWork.RollbackTransactionAsync();
                 _logger.LogError(err.Message);
                 throw;
             }
         }
 
-        public async Task<CommonResponse<SubcategoryResultDto>> UpdateSubcategoryWithNewDiscountAsync(int subcategoryId, int discountId)
+        public async Task<CommonResponse<SubcategoryResultDto>> UpdateSubcategoryWithNewDiscountAsync(
+            int subcategoryId,
+            int discountId,
+            bool useExistingTransaction = false)
         {
             var response = new CommonResponse<SubcategoryResultDto>();
             if (subcategoryId <= 0 || discountId <= 0)
-                return response.Fail("400", "Invalid data, discount Id and Category Id must be more than 0");
+                return response.Fail("400", "Invalid data, discount Id and Subcategory Id must be more than 0");
 
             try
             {
+                if (!useExistingTransaction)
+                    await _unitOfWork.BeginTransactionAsync();
                 var subcategory = await _unitOfWork.Repository<Subcategory, int>().GetByIdAsync(subcategoryId);
                 if (subcategory == null)
                     return response.Fail("404", "Subcategory Not Found");
@@ -270,12 +276,18 @@ namespace Store.Services.Services.SubcategoryService
 
                 subcategory.Discount = discount;
                 _unitOfWork.Repository<Subcategory, int>().Update(subcategory);
+                if (!useExistingTransaction)
+                {
+                    await _unitOfWork.CompleteAsync();
+                    await _unitOfWork.CommitTransactionAsync();
+                }
                 var mappedSubcategory = _mapper.Map<SubcategoryResultDto>(subcategory);
-
                 return response.Success(mappedSubcategory);
             }
             catch (Exception err)
             {
+                if (!useExistingTransaction)
+                    await _unitOfWork.RollbackTransactionAsync();
                 _logger.LogError(err.Message);
                 throw;
             }

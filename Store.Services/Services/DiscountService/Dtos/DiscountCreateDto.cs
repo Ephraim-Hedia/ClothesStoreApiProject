@@ -12,7 +12,7 @@ namespace Store.Services.Services.DiscountService.Dtos
 
         public List<int>? CategoryIds { get; set; }
         public List<int>? SubcategoryIds { get; set; }
-        public List<int>? ProductsIds { get; set; }
+        public List<int>? ProductIds { get; set; }
 
 
     }
