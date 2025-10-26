@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Store.Data.Context;
 
@@ -11,9 +12,11 @@ using Store.Data.Context;
 namespace Store.Data.Migrations
 {
     [DbContext(typeof(StoreClothesDbContext))]
-    partial class StoreClothesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251026111451_updateAddressTable")]
+    partial class updateAddressTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -360,7 +363,7 @@ namespace Store.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cities");
+                    b.ToTable("City");
                 });
 
             modelBuilder.Entity("Store.Data.Entities.OrderEntities.Delivery", b =>
@@ -410,7 +413,7 @@ namespace Store.Data.Migrations
 
                     b.HasIndex("ShippingAddressId");
 
-                    b.ToTable("Deliveries");
+                    b.ToTable("Delivery");
                 });
 
             modelBuilder.Entity("Store.Data.Entities.OrderEntities.Order", b =>
@@ -511,7 +514,7 @@ namespace Store.Data.Migrations
 
                     b.HasIndex("CityId");
 
-                    b.ToTable("ShippingAddresses");
+                    b.ToTable("ShippingAddress");
                 });
 
             modelBuilder.Entity("Store.Data.Entities.ProductEntities.Category", b =>
@@ -903,7 +906,7 @@ namespace Store.Data.Migrations
             modelBuilder.Entity("Store.Data.Entities.OrderEntities.Delivery", b =>
                 {
                     b.HasOne("Store.Data.Entities.OrderEntities.Order", "Order")
-                        .WithOne("DeliveryMethod")
+                        .WithOne("Delivery")
                         .HasForeignKey("Store.Data.Entities.OrderEntities.Delivery", "OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1120,7 +1123,7 @@ namespace Store.Data.Migrations
 
             modelBuilder.Entity("Store.Data.Entities.OrderEntities.Order", b =>
                 {
-                    b.Navigation("DeliveryMethod")
+                    b.Navigation("Delivery")
                         .IsRequired();
 
                     b.Navigation("OrderItems");

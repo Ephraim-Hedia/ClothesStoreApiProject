@@ -20,7 +20,7 @@ namespace Store.Services.Services.OrderService.Dtos
                 .ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.GetTotal()));
 
             CreateMap<OrderCreateDto, Order>()
-                .ForMember(dest => dest.Delivery.ShippingAddress, opt => opt.MapFrom(src => src.ShippingAddress));
+                .ForMember(dest => dest.DeliveryMethod.ShippingAddress, opt => opt.MapFrom(src => src.ShippingAddress));
         }
     }
 }

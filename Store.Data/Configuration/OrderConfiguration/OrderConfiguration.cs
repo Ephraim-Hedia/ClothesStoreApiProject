@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Store.Data.Entities.OrderEntities;
+using System.Reflection.Emit;
 
 namespace Store.Data.Configuration.OrderConfiguration
 {
@@ -10,10 +11,10 @@ namespace Store.Data.Configuration.OrderConfiguration
         {
             builder.HasKey(o => o.Id);
 
-            builder.HasOne(o => o.Delivery)
-                   .WithOne(d => d.Order)
-                   .HasForeignKey<Delivery>(d => d.OrderId)
-                   .OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(o => o.DeliveryMethod)
+            .WithOne(d => d.Order)
+            .HasForeignKey<Delivery>(d => d.OrderId)
+            .OnDelete(DeleteBehavior.Cascade);
 
             builder.Property(o => o.Subtotal)
                    .HasColumnType("decimal(18,2)");

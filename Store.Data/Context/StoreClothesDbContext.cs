@@ -31,5 +31,11 @@ namespace Store.Data.Context
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Basket> Baskets { get; set; }
         public DbSet<BasketItem> BasketItems { get; set; }
+        public DbSet<Delivery> Deliveries { get; set; }
+        public DbSet<ShippingAddress> ShippingAddresses { get; set; }
+        public DbSet<City> Cities { get; set; }
+
+
+
     }
 }
