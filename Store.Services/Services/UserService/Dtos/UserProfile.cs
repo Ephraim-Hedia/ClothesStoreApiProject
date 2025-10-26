@@ -20,6 +20,7 @@ namespace Store.Services.Services.UserService.Dtos
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName))
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber)).ReverseMap();
             // Address mappings
+            CreateMap<City, CityResultDto>();
             CreateMap<AddressCreateDto, Address>().ReverseMap();
             CreateMap<Address, AddressResultDto>().ReverseMap();
         }

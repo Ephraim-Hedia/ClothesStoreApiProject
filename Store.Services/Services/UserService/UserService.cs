@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Build.Framework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Store.Data.Entities.IdentityEntities;
@@ -41,8 +40,8 @@ namespace Store.Services.Services.UserService
                 return response.Fail("400", "Invalid Data, Password is Required");
             if (string.IsNullOrEmpty(dto.PhoneNumber))
                 return response.Fail("400", "Invalid Data, Phone Number is Required");
-            if (string.IsNullOrEmpty(dto.City))
-                return response.Fail("400", "Invalid Data, City is Required");
+            if (dto.CityId <= 0)
+                return response.Fail("400", "Invalid Data, City Id Must be more than 0");
 
             try
             {
@@ -52,14 +51,12 @@ namespace Store.Services.Services.UserService
                     return response.Fail("400", string.Join(", ", result.Errors.Select(e => e.Description)));
 
                 // Optional: Add Address if data provided
-                if (!string.IsNullOrEmpty(dto.Street) || !string.IsNullOrEmpty(dto.City))
+                if (!string.IsNullOrEmpty(dto.Street) || dto.CityId != null)
                 {
                     var addressDto = new AddressCreateDto
                     {
                         Street = dto.Street,
-                        City = dto.City,
-                        State = dto.State,
-                        ZipCode = dto.ZipCode
+                        CityId = dto.CityId.Value,
                     };
 
                     await _addressService.AddAddressToUserAsync(user.Id, addressDto);
@@ -166,7 +163,7 @@ namespace Store.Services.Services.UserService
                     return response.Fail("400", string.Join(", ", result.Errors.Select(e => e.Description)));
 
                 // Address update handled via AddressService (only if you want)
-                if (!string.IsNullOrEmpty(dto.Street) || !string.IsNullOrEmpty(dto.City))
+                if (!string.IsNullOrEmpty(dto.Street) || dto.CityId >=0)
                 {
                     var addresses = await _addressService.GetAddressesByUserIdAsync(userId);
                     if (addresses.IsSuccess && addresses.Data.Any())
@@ -175,9 +172,7 @@ namespace Store.Services.Services.UserService
                         var updateDto = new AddressUpdateDto
                         {
                             Street = dto.Street,
-                            City = dto.City,
-                            State = dto.State,
-                            ZipCode = dto.ZipCode
+                            CityId = dto.CityId.Value,
                         };
 
                         await _addressService.UpdateAddressAsync(userId, firstAddress.Id, updateDto);
@@ -188,9 +183,7 @@ namespace Store.Services.Services.UserService
                         var createDto = new AddressCreateDto
                         {
                             Street = dto.Street,
-                            City = dto.City,
-                            State = dto.State,
-                            ZipCode = dto.ZipCode
+                            CityId = dto.CityId.Value,
                         };
 
                         await _addressService.AddAddressToUserAsync(userId, createDto);
