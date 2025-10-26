@@ -12,6 +12,7 @@
         public DateTimeOffset OrderDate { get; set; } = DateTimeOffset.Now;
 
         // One-to-one with Delivery
+        public int? DeliveryId { get; set; }        // ✅ FK here
         public Delivery DeliveryMethod { get; set; }
         public OrderStatus OrderStatus { get; set; } = OrderStatus.pending;
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();

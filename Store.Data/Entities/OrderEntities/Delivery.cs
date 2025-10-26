@@ -19,10 +19,6 @@
         public int ShippingAddressId { get; set; }
         public ShippingAddress ShippingAddress { get; set; }
 
-        // Relationship between order and Delivery
-        public int OrderId { get; set; }
-        public Order Order { get; set; }
-
         // Optional fields
         // Delivery company or courier info
         public string? CourierName { get; set; }

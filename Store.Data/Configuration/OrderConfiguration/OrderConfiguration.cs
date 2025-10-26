@@ -11,10 +11,11 @@ namespace Store.Data.Configuration.OrderConfiguration
         {
             builder.HasKey(o => o.Id);
 
+            // OrderConfiguration.cs
             builder.HasOne(o => o.DeliveryMethod)
-            .WithOne(d => d.Order)
-            .HasForeignKey<Delivery>(d => d.OrderId)
-            .OnDelete(DeleteBehavior.Cascade);
+                .WithOne()
+                .HasForeignKey<Order>(o => o.DeliveryId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Property(o => o.Subtotal)
                    .HasColumnType("decimal(18,2)");

@@ -69,16 +69,30 @@ namespace Store.Services.Services.OrderService
             // Calculate subtotal
             var subtotal = orderItems.Sum(i => i.Price * i.Quantity);
 
+
+            // Create Delivery & Shipping Address
+            var shippingAddress = _mapper.Map<ShippingAddress>(dto.ShippingAddress);
+
+            var delivery = new Delivery
+            {
+                ShippingAddress = shippingAddress,
+                // You can also add DeliveryMethodId if you have one
+            };
+            await _unitOfWork.Repository<Delivery, int>().AddAsync(delivery);
+            await _unitOfWork.CompleteAsync();
+
             // Create the order
             var order = new Order
             {
                 BuyerEmail = userId,
-                //Delivery.ShippingAddress = _mapper.Map<ShippingAddress>(dto.ShippingAddress),
+                DeliveryMethod = delivery,
                 OrderItems = orderItems,
                 Subtotal = subtotal,
                 BasketId = dto.BasketId,
                 OrderStatus = OrderStatus.pending
             };
+
+            
 
             await _unitOfWork.Repository<Order, int>().AddAsync(order);
             await _unitOfWork.CompleteAsync();

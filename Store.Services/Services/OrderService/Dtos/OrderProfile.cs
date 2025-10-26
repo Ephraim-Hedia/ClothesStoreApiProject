@@ -14,14 +14,18 @@ namespace Store.Services.Services.OrderService.Dtos
                 .ForMember(dest => dest.ProductColor, opt => opt.MapFrom(src => src.ItemOrdered.ProductColor))
                 .ForMember(dest => dest.ProductSize, opt => opt.MapFrom(src => src.ItemOrdered.ProductSize));
 
+            CreateMap<Delivery, DeliveryDto>();
             CreateMap<ShippingAddress, ShippingAddressDto>().ReverseMap();
+            CreateMap<ShippingAddress, ShippingAddressCreateDto>().ReverseMap();
+
+            CreateMap<City, CityResultDto>().ReverseMap();
+
 
             CreateMap<Order, OrderResultDto>()
                 .ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.GetTotal()));
 
             
-            CreateMap<Delivery, DeliveryDto>();
-            CreateMap<ShippingAddress, ShippingAddressDto>();
+            
 
         }
         public class DeliveryDto
