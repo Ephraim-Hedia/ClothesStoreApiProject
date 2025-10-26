@@ -13,7 +13,7 @@ namespace Store.Services.Services.UserService.Dtos
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName))
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
-                .ForMember(dest => dest.Addresses, opt => opt.MapFrom(src => src.Address)).ReverseMap();
+                .ForMember(dest => dest.Addresses, opt => opt.MapFrom(src => src.Addresses)).ReverseMap();
 
             CreateMap<ApplicationUser, UserCreateDto>()
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))

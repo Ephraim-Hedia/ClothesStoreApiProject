@@ -106,7 +106,7 @@ namespace Store.Services.Services.UserService
             var response = new CommonResponse<IReadOnlyList<UserResultDto>>();
             try
             {
-                var users = await _userManager.Users.Include(user => user.Address).ToListAsync();
+                var users = await _userManager.Users.Include(user => user.Addresses).ToListAsync();
                 if (!users.Any())
                     return response.Fail("404", "Not Found Users");
                 var mappedUsers = _mapper.Map<IReadOnlyList<UserResultDto>>(users);
@@ -128,7 +128,7 @@ namespace Store.Services.Services.UserService
             try
             {
                 var user = await _userManager.Users
-                    .Include(user => user.Address)
+                    .Include(user => user.Addresses)
                     .FirstOrDefaultAsync(user => user.Id == userId);
                 if (user == null)
                     return response.Fail("404", $"Not Found User With Id : {userId}");

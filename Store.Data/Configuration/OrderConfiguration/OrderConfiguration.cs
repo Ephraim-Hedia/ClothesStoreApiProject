@@ -8,12 +8,21 @@ namespace Store.Data.Configuration.OrderConfiguration
     {
         public void Configure(EntityTypeBuilder<Order> builder)
         {
-            builder.OwnsOne(order => order.ShippingAddress, ShippingAddress =>
-            {
-                ShippingAddress.WithOwner();
-                ShippingAddress.Property(a => a.City).IsRequired();
-                ShippingAddress.Property(a => a.Street).IsRequired();
-            });
+            builder.HasKey(o => o.Id);
+
+            builder.HasOne(o => o.Delivery)
+                   .WithOne(d => d.Order)
+                   .HasForeignKey<Delivery>(d => d.OrderId)
+                   .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Property(o => o.Subtotal)
+                   .HasColumnType("decimal(18,2)");
+
+            builder.Property(o => o.BuyerEmail)
+                   .IsRequired();
+
+            builder.Property(o => o.OrderStatus)
+                   .HasConversion<string>();
             builder.HasMany(o => o.OrderItems)
                .WithOne(oi => oi.Order)
                .HasForeignKey(oi => oi.OrderId)

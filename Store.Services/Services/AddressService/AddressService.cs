@@ -37,18 +37,18 @@ namespace Store.Services.Services.AddressService
             try
             {
                 var user = await _userManager.Users
-                    .Include(u => u.Address)
+                    .Include(u => u.Addresses)
                     .FirstOrDefaultAsync(u => u.Id == userId);
                 if (user == null)
                     return response.Fail("404", $"User not found with Id: {userId}");
 
                 var address = _mapper.Map<Address>(dto);
                 address.ApplicationUserId = user.Id;
-                user.Address ??= new List<Address>();
-                if(user.Address.Count >=3)
+                user.Addresses ??= new List<Address>();
+                if(user.Addresses.Count >=3)
                     return response.Fail("404", $"User with Id: {userId}, Have Max Limit of Addresses, try to remove one first, then add");
 
-                user.Address.Add(address);
+                user.Addresses.Add(address);
 
                 await _userManager.UpdateAsync(user);
 
@@ -70,16 +70,16 @@ namespace Store.Services.Services.AddressService
             try
             {
                 var user = await _userManager.Users
-                                    .Include(u => u.Address)
+                                    .Include(u => u.Addresses)
                                     .FirstOrDefaultAsync(u => u.Id == userId);
                 if (user == null)
                     return response.Fail("400", "Invalid Data, Not Valid User Id");
 
-                var address = user.Address?.FirstOrDefault(a => a.Id == addressId);
+                var address = user.Addresses?.FirstOrDefault(a => a.Id == addressId);
                 if (address == null)
                     return response.Fail("404", $"Address not found with Id: {addressId}");
 
-                user.Address.Remove(address);
+                user.Addresses.Remove(address);
                 await _userManager.UpdateAsync(user);
                 return response.Success(true);
 
@@ -104,11 +104,11 @@ namespace Store.Services.Services.AddressService
             try
             {
                 var user = await _userManager.Users
-                    .Include(user => user.Address)
+                    .Include(user => user.Addresses)
                     .FirstOrDefaultAsync(user => user.Id == userId);
                 if (user == null)
                     return response.Fail("404", $"User not found with Id: {userId}");
-                var address = user.Address.FirstOrDefault(a => a.Id == addressId);
+                var address = user.Addresses.FirstOrDefault(a => a.Id == addressId);
                 if (address == null)
                     return response.Fail("404", $"Address not found with Id: {addressId}");
 
@@ -130,12 +130,12 @@ namespace Store.Services.Services.AddressService
             try
             {
                 var user = await _userManager.Users
-                    .Include(user => user.Address)
+                    .Include(user => user.Addresses)
                     .FirstOrDefaultAsync(user => user.Id == userId);
                 if(user == null)
                     return response.Fail("404", $"User not found with Id: {userId}");
 
-                var addresses = user.Address ?? new List<Address>();
+                var addresses = user.Addresses ?? new List<Address>();
                 return response.Success(_mapper.Map<IReadOnlyList<AddressResultDto>>(addresses));
             }
             catch (Exception err)
@@ -149,20 +149,19 @@ namespace Store.Services.Services.AddressService
         {
             var response = new CommonResponse<AddressResultDto>();
             var user = await _userManager.Users
-                .Include(u => u.Address)
+                .Include(u => u.Addresses)
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
             if (user == null)
                 return response.Fail("404", $"User not found with Id: {userId}");
 
-            var address = user.Address?.FirstOrDefault(a => a.Id == addressId);
+            var address = user.Addresses?.FirstOrDefault(a => a.Id == addressId);
             if (address == null)
                 return response.Fail("404", $"Address not found with Id: {addressId}");
 
             if (!string.IsNullOrEmpty(dto.Street)) address.Street = dto.Street;
-            if (!string.IsNullOrEmpty(dto.City)) address.City = dto.City;
-            if (!string.IsNullOrEmpty(dto.State)) address.State = dto.State;
-            if (!string.IsNullOrEmpty(dto.ZipCode)) address.ZipCode = dto.ZipCode;
+            if (!string.IsNullOrEmpty(dto.City)) address.City.Name = dto.City;
+
 
             await _userManager.UpdateAsync(user);
 

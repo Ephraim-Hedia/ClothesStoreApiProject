@@ -73,7 +73,7 @@ namespace Store.Services.Services.OrderService
             var order = new Order
             {
                 BuyerEmail = userId,
-                ShippingAddress = _mapper.Map<ShippingAddress>(dto.ShippingAddress),
+                //Delivery.ShippingAddress = _mapper.Map<ShippingAddress>(dto.ShippingAddress),
                 OrderItems = orderItems,
                 Subtotal = subtotal,
                 BasketId = dto.BasketId,

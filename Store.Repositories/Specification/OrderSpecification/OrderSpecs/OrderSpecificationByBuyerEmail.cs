@@ -8,7 +8,7 @@ namespace Store.Repositories.Specification.OrderSpecification.OrderSpecs
         public OrderSpecificationByBuyerEmail(string buyerEmail) 
             : base(order => order.BuyerEmail == buyerEmail)
         {
-            AddInclude(order => order.ShippingAddress);
+            AddInclude(order => order.Delivery);
             AddInclude(order => order.OrderItems);
         }
     }
