@@ -19,8 +19,14 @@ namespace Store.Services.Services.OrderService.Dtos
             CreateMap<Order, OrderResultDto>()
                 .ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.GetTotal()));
 
-            CreateMap<OrderCreateDto, Order>()
-                .ForMember(dest => dest.DeliveryMethod.ShippingAddress, opt => opt.MapFrom(src => src.ShippingAddress));
+            
+            CreateMap<Delivery, DeliveryDto>();
+            CreateMap<ShippingAddress, ShippingAddressDto>();
+
+        }
+        public class DeliveryDto
+        {
+            public ShippingAddressDto ShippingAddress { get; set; }
         }
     }
 }

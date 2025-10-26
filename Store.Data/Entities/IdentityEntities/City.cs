@@ -9,7 +9,7 @@ namespace Store.Data.Entities.IdentityEntities
         public decimal DeliveryCost { get; set; }
 
         // Optional estimated delivery time in days
-        public int EstimatedDeliveryDays { get; set; }
+        public int EstimatedDeliveryDays { get; set; } 
 
         // Navigation
         public ICollection<Address> Addresses { get; set; } = new List<Address>();

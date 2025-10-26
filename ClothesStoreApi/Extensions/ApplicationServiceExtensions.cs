@@ -27,6 +27,8 @@ using Store.Services.Services.BasketService.Dtos;
 using Store.Services.Services.OrderService;
 using Store.Services.Services.OrderService.Dtos;
 using Store.Services.Services.DeliveryService;
+using Store.Services.Services.CityService;
+using Store.Services.Services.CityService.Dtos;
 
 namespace Store.Api.Extensions
 {
@@ -51,6 +53,8 @@ namespace Store.Api.Extensions
             services.AddScoped<IBasketService, BasketService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IDeliveryService, DeliveryService>();
+            services.AddScoped<ICityService, CityService>();
+
 
             services.AddScoped<EntityListValidator>();
             services.AddScoped<EntityValidator>();
@@ -66,6 +70,8 @@ namespace Store.Api.Extensions
             services.AddAutoMapper(typeof(UserProfile));
             services.AddAutoMapper(typeof(BasketProfile));
             services.AddAutoMapper(typeof(OrderProfile));
+            services.AddAutoMapper(typeof(CityProfile));
+
 
 
 

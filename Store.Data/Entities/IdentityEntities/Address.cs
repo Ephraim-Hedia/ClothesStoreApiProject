@@ -7,7 +7,7 @@ namespace Store.Data.Entities.IdentityEntities
         public string Street { get; set; }
 
         // Foreign key to City
-        public int CityId { get; set; }
+        public int CityId { get; set; } 
         public City City { get; set; }
         [Required]
         public string ApplicationUserId { get; set; }

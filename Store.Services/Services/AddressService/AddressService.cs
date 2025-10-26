@@ -160,7 +160,7 @@ namespace Store.Services.Services.AddressService
                 return response.Fail("404", $"Address not found with Id: {addressId}");
 
             if (!string.IsNullOrEmpty(dto.Street)) address.Street = dto.Street;
-            if (!string.IsNullOrEmpty(dto.City)) address.City.Name = dto.City;
+            if (dto.CityId != null) address.CityId = dto.CityId.Value;
 
 
             await _userManager.UpdateAsync(user);
