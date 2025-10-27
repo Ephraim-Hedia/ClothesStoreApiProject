@@ -4,6 +4,7 @@ using Store.Data.Entities.BasketEntities;
 using Store.Data.Entities.ProductEntities;
 using Store.Repositories.Interfaces;
 using Store.Repositories.Specification.BasketSpecification.BasketSpecs;
+using Store.Repositories.Specification.ProductSpecification.ProductSpecs;
 using Store.Services.HandleResponse.CommonResponse;
 using Store.Services.Services.BasketService.Dtos;
 using Store.Services.Services.UserService;
@@ -88,7 +89,8 @@ namespace Store.Services.Services.BasketService
             }
 
             // 🧩 Validate product existence
-            var product = await _unitOfWork.Repository<Product, int>().GetByIdAsync(dto.ProductId);
+            var specs = new ProductSpecificationById(dto.ProductId);
+            var product = await _unitOfWork.Repository<Product, int>().GetByIdWithSpecificationAsync(specs);
             if (product == null)
                 return response.Fail("404", $"Product with ID {dto.ProductId} not found");
 
@@ -115,7 +117,7 @@ namespace Store.Services.Services.BasketService
             else
             {
                 var basketItem = _mapper.Map<BasketItem>(dto);
-                basketItem.Price = product.Price; // ✅ Always set price from product entity
+                basketItem.Price = product.GetPriceAfterBestDiscount(); // ✅ Always set price from product entity
                 basket.BasketItems.Add(basketItem);
                 _logger.LogInformation("Added product {ProductId} to basket for user {UserId}", dto.ProductId, userId);
             }

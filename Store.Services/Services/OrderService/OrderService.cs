@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
 using Store.Data.Entities.BasketEntities;
+using Store.Data.Entities.IdentityEntities;
 using Store.Data.Entities.OrderEntities;
 using Store.Data.Entities.ProductEntities;
 using Store.Repositories.Interfaces;
@@ -27,7 +28,7 @@ namespace Store.Services.Services.OrderService
         }
         public async Task<CommonResponse<OrderResultDto>> CreateOrderAsync(string userId, OrderCreateDto dto)
         {
-            var response = new CommonResponse<OrderResultDto>();
+            var response = new CommonResponse<OrderResultDto>(); 
 
             if (string.IsNullOrEmpty(userId))
                 return response.Fail("400", "Invalid user ID");
@@ -69,13 +70,22 @@ namespace Store.Services.Services.OrderService
             // Calculate subtotal
             var subtotal = orderItems.Sum(i => i.Price * i.Quantity);
 
+            // Check about the city 
+            var city = await _unitOfWork.Repository<City, int>().GetByIdAsync(dto.ShippingAddress.CityId);
+            if (city == null)
+                return response.Fail("404", "Not Found City");
 
             // Create Delivery & Shipping Address
             var shippingAddress = _mapper.Map<ShippingAddress>(dto.ShippingAddress);
+            shippingAddress.City = city;
+            await _unitOfWork.Repository<ShippingAddress, int>().AddAsync(shippingAddress);
+            await _unitOfWork.CompleteAsync();
 
             var delivery = new Delivery
             {
                 ShippingAddress = shippingAddress,
+                DeliveryPrice = shippingAddress.City.DeliveryCost,
+                EstimatedArrivalDate = DateTime.UtcNow.AddDays(shippingAddress.City.EstimatedDeliveryDays)
                 // You can also add DeliveryMethodId if you have one
             };
             await _unitOfWork.Repository<Delivery, int>().AddAsync(delivery);
@@ -85,7 +95,7 @@ namespace Store.Services.Services.OrderService
             var order = new Order
             {
                 BuyerEmail = userId,
-                DeliveryMethod = delivery,
+                DeliveryId = delivery.Id,
                 OrderItems = orderItems,
                 Subtotal = subtotal,
                 BasketId = dto.BasketId,
@@ -113,9 +123,11 @@ namespace Store.Services.Services.OrderService
             if (orderId <= 0)
                 return response.Fail("400", "Invalid order ID");
 
-            var order = await _unitOfWork.Repository<Order, int>().GetByIdAsync(orderId);
+            var specs = new OrderSpecificationById(orderId);
+            var order = await _unitOfWork.Repository<Order, int>().GetByIdWithSpecificationAsync(specs);
             if (order == null || order.BuyerEmail != userEmail)
                 return response.Fail("404", "Order not found or access denied");
+
 
             return response.Success(_mapper.Map<OrderResultDto>(order));
         }

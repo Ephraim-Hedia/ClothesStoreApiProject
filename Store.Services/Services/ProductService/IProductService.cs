@@ -14,5 +14,6 @@ namespace Store.Services.Services.ProductService
         Task<CommonResponse<bool>> DeleteProductAsync(int productId);
         Task<CommonResponse<ProductResultDto>> UpdateProductWithNewDiscountAsync(int productId, int discountId, bool useExistingTransaction);
         Task<CommonResponse<bool>> UpdateProductsWithNewDiscountAsync(List<int> productIds, int discountId, bool useExistingTransaction);
+        Task<CommonResponse<decimal>> GetPriceAfterDiscountAsync(int productId);
     }
 }

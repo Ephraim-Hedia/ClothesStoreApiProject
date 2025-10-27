@@ -15,8 +15,13 @@ namespace Store.Services.Services.ProductService.Dtos
             CreateMap<Product, ProductResultDto>()
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
                 .ForMember(dest => dest.SubcategoryName, opt => opt.MapFrom(src => src.Subcategory != null ? src.Subcategory.Name : null))
-                .ForMember(dest => dest.DiscountPercentage, opt => opt.MapFrom(src => src.Discount != null ? (decimal?)src.Discount.Percentage : null))
+                .ForMember(dest => dest.ProductDiscount, opt => opt.MapFrom(src => src.Discount != null ? (decimal?)src.Discount.Percentage : null))
+                .ForMember(dest => dest.CategoryDiscount, opt => opt.MapFrom(src => src.Category.Discount != null ? (decimal?)src.Category.Discount.Percentage : null))
+                .ForMember(dest => dest.SubcategoryDiscount, opt => opt.MapFrom(src => src.Subcategory.Discount != null ? (decimal?)src.Subcategory.Discount.Percentage : null))
+
                 .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images.Select(i => i.Url).ToList()))
+                .ForMember(dest => dest.PriceBeforeDiscount, opt => opt.MapFrom(src => src.Price))
+                .ForMember(dest => dest.PriceAfterDiscount, opt => opt.MapFrom(src => src.GetPriceAfterBestDiscount()))
                 // Map Colors
                 .ForMember(dest => dest.ProductColors, opt => opt.MapFrom(
                     src => src.ProductColorJoins != null

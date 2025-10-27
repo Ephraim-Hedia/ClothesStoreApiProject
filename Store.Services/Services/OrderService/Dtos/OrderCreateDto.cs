@@ -11,7 +11,7 @@ namespace Store.Services.Services.OrderService.Dtos
     {
         [Required]
         public string Street { get; set; }
-        [Required]
+        [Required] 
         public int CityId { get; set; }
         // optional for historical tracing
         public string? RecipientName { get; set; }

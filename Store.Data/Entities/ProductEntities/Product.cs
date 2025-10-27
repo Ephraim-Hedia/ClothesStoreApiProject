@@ -17,5 +17,22 @@ namespace Store.Data.Entities.ProductEntities
         public int? DiscountId { get; set; }
         public Discount? Discount { get; set; }
 
+        public decimal GetPriceAfterBestDiscount()
+        {
+            decimal productDiscount = Discount?.Percentage ?? 0;
+
+            // Get subcategory discount (if exists)
+            decimal subcategoryDiscount = Subcategory?.Discount?.Percentage ?? 0;
+
+            // Get category discount (if exists)
+            decimal categoryDiscount = Category?.Discount?.Percentage ?? 0;
+
+            // Find the biggest discount
+            decimal maxDiscount = Math.Max(productDiscount, Math.Max(subcategoryDiscount, categoryDiscount));
+
+            // Apply the discount
+            return Price - (Price * (maxDiscount / 100m));
+        }
+
     }
 }

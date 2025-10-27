@@ -1,15 +1,9 @@
-﻿namespace Store.Data.Entities.OrderEntities
+﻿using Store.Data.Entities.OrderEntities;
+
+namespace Store.Services.Services.OrderService.Dtos
 {
-    public enum DeliveryStatus
+    public class DeliveryDto
     {
-        Pending,
-        InProgress,
-        Delivered,
-        Canceled
-    }
-    public class Delivery : BaseEntity<int> 
-    {
-        
         // Delivery details
         public decimal DeliveryPrice { get; set; }
         public DateTime EstimatedArrivalDate { get; set; }
@@ -17,7 +11,7 @@
 
         // Shipping info (snapshot of where to deliver)
         public int ShippingAddressId { get; set; }
-        public ShippingAddress ShippingAddress { get; set; }
+        public ShippingAddressDto ShippingAddress { get; set; }
 
         // Optional fields
         // Delivery company or courier info

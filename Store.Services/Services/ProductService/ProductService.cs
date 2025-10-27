@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Store.Data.Entities.ProductEntities;
 using Store.Repositories.Interfaces;
@@ -46,7 +47,13 @@ namespace Store.Services.Services.ProductService
             // 2) Validate Subcategory
             var subcategoryResult = await _validator.ValidateEntityAsync<Subcategory>(dto.SubcategoryId);
             if (!subcategoryResult.IsValid)
+            {
                 return response.Fail(subcategoryResult.ErrorCode!, subcategoryResult.ErrorMessage!);
+            }
+            // check if the parent of subcategory (category Id) match the passing category Id
+            if (subcategoryResult.Entity.CategoryId != dto.CategoryId)
+                return response.Fail("400", "Parent of Subcategory Doesn't must Category Id");
+
 
             // 3) Validate discount
             if(dto.DiscountId  != null)
@@ -101,7 +108,9 @@ namespace Store.Services.Services.ProductService
                 await _unitOfWork.Repository<Product, int>().AddAsync(product);
                 await _unitOfWork.CompleteAsync();
 
-                var mapped = _mapper.Map<ProductResultDto>(product);
+                var specs = new ProductSpecificationById(product.Id);
+                var productDb = await _unitOfWork.Repository<Product, int>().GetByIdWithSpecificationAsync(specs);
+                var mapped = _mapper.Map<ProductResultDto>(productDb);
                 return response.Success(mapped);
             }
             catch (Exception ex)
@@ -169,7 +178,8 @@ namespace Store.Services.Services.ProductService
 
             try
             {
-                var product = await _unitOfWork.Repository<Product, int>().GetByIdAsync(productId);
+                var specs = new ProductSpecificationById(productId);
+                var product = await _unitOfWork.Repository<Product, int>().GetByIdWithSpecificationAsync(specs);
 
                 if (product == null)
                     return response.Fail("404", "Product not found");
@@ -361,6 +371,18 @@ namespace Store.Services.Services.ProductService
                 _logger.LogError(err.Message);
                 throw;
             }
+        }
+        public async Task<CommonResponse<decimal>> GetPriceAfterDiscountAsync(int productId)
+        {
+            var response = new CommonResponse<decimal>();
+            var specs = new ProductSpecificationById(productId);
+            var product = await _unitOfWork.Repository<Product, int>().GetByIdWithSpecificationAsync(specs);
+
+            if (product == null)
+                return response.Fail("404","Product not found");
+
+            var finalPrice = product.GetPriceAfterBestDiscount();
+            return response.Success(finalPrice);
         }
 
     }
