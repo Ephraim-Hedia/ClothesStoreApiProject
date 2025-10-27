@@ -15,12 +15,12 @@ namespace Store.Data.Configuration.ProductConfiguration
             entity.HasOne(j => j.Product)
                 .WithMany(p => p.ProductColorJoins)
                 .HasForeignKey(j => j.ProductId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasOne(j => j.ProductColor)
                 .WithMany(c => c.ProductColorJoins)
                 .HasForeignKey(j => j.ProductColorId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

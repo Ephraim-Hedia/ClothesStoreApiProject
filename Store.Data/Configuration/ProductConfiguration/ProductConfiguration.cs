@@ -47,7 +47,7 @@ namespace Store.Data.Configuration.ProductConfiguration
             entity.HasMany(p => p.ProductColorJoins)
                 .WithOne(pc => pc.Product)
                 .HasForeignKey(pc => pc.ProductId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
             // --------------------------------------------
             // 🔹 Product ↔ ProductSizeJoin
@@ -55,7 +55,7 @@ namespace Store.Data.Configuration.ProductConfiguration
             entity.HasMany(p => p.ProductSizeJoins)
                 .WithOne(ps => ps.Product)
                 .HasForeignKey(ps => ps.ProductId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
