@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Store.Data.Entities.BasketEntities;
 using Store.Data.Entities.IdentityEntities;
@@ -147,5 +148,279 @@ namespace Store.Services.Services.OrderService
             var mapped = _mapper.Map<List<OrderResultDto>>(orders);
             return response.Success(mapped);
         }
+
+        public async Task<CommonResponse<bool>> CancelOrderAsync(int orderId, string userEmail)
+        {
+            
+            var response = new CommonResponse<bool>();
+
+            if (orderId <= 0)
+                return response.Fail("400", "Invalid order ID");
+
+            var specs = new OrderSpecificationById(orderId);
+            var order = await _unitOfWork.Repository<Order, int>().GetByIdWithSpecificationAsync(specs);
+
+            if (order == null || order.BuyerEmail != userEmail)
+                return response.Fail("404", "Order not found or access denied");
+
+            if (order.OrderStatus == OrderStatus.canceled)
+                return response.Fail("400", "Order is already canceled");
+
+            if (order.OrderStatus == OrderStatus.delivered)
+                return response.Fail("400", "Delivered orders cannot be canceled");
+
+            // Cancel the delivery as well
+            
+            var delivery = await _unitOfWork.Repository<Delivery, int>().GetByIdAsync(order.DeliveryId.Value);
+            if (delivery == null)
+                return response.Fail("404", "Associated delivery not found");
+            try
+            {
+                delivery.UpdateStatus(DeliveryStatus.Canceled);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return response.Fail("400", ex.Message);
+            }
+
+            order.OrderStatus = OrderStatus.canceled;
+
+            _unitOfWork.Repository<Delivery, int>().Update(delivery);
+            _unitOfWork.Repository<Order, int>().Update(order);
+            await _unitOfWork.CompleteAsync();
+
+            _logger.LogInformation("Order {OrderId} and its delivery were canceled by user {UserEmail}", orderId, userEmail);
+
+            return response.Success(true);
+        }
+
+        // --------------------------
+        // Update Delivery Info
+        // --------------------------
+        public async Task<CommonResponse<OrderResultDto>> UpdateDeliveryAsync(int orderId, UpdateDeliveryDto dto, string userEmail)
+        {
+            var response = new CommonResponse<OrderResultDto>();
+
+            if (orderId <= 0)
+                return response.Fail("400", "Invalid order ID");
+
+            var specs = new OrderSpecificationById(orderId);
+            var order = await _unitOfWork.Repository<Order, int>().GetByIdWithSpecificationAsync(specs);
+
+            if (order == null || order.BuyerEmail != userEmail)
+                return response.Fail("404", "Order not found or access denied");
+
+            var delivery = await _unitOfWork.Repository<Delivery, int>().GetByIdAsync(order.DeliveryId.Value);
+            if (delivery == null)
+                return response.Fail("404", "Associated delivery not found");
+
+            // Update delivery status if provided
+            if (dto.Status.HasValue)
+            {
+                try
+                {
+                    delivery.UpdateStatus(dto.Status.Value);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    return response.Fail("400", ex.Message);
+                }
+            }
+
+            // Update courier info
+            if (!string.IsNullOrEmpty(dto.CourierName) && !string.IsNullOrEmpty(dto.TrackingNumber))
+                delivery.AssignCourier(dto.CourierName, dto.TrackingNumber);
+
+            // Add note
+            if (!string.IsNullOrEmpty(dto.Notes))
+                delivery.AddNote(dto.Notes);
+
+            _unitOfWork.Repository<Delivery, int>().Update(delivery);
+            await _unitOfWork.CompleteAsync();
+
+            _logger.LogInformation("Delivery for order {OrderId} updated successfully by {UserEmail}", orderId, userEmail);
+
+            return response.Success(_mapper.Map<OrderResultDto>(order));
+        }
+
+        // --------------------------
+        // Update Order Items (Before Processing)
+        // --------------------------
+        public async Task<CommonResponse<OrderResultDto>> UpdateOrderItemsQuantityAsync(int orderId, List<UpdateOrderItemDto> items, string userEmail)
+        {
+            var response = new CommonResponse<OrderResultDto>();
+
+            if (orderId <= 0)
+                return response.Fail("400", "Invalid order ID");
+
+            var specs = new OrderSpecificationById(orderId);
+            var order = await _unitOfWork.Repository<Order, int>().GetByIdWithSpecificationAsync(specs);
+
+            if (order == null || order.BuyerEmail != userEmail)
+                return response.Fail("404", "Order not found or access denied");
+
+            var delivery = await _unitOfWork.Repository<Delivery, int>().GetByIdAsync(order.DeliveryId.Value);
+            if (delivery == null)
+                return response.Fail("404", "Associated delivery not found");
+
+            // Big Note
+            // Prevent editing items after processing starts
+            if (delivery.Status != DeliveryStatus.Pending)
+                return response.Fail("400", "Cannot modify order items after processing begins.");
+
+            foreach (var dto in items)
+            {
+                var item = order.OrderItems.FirstOrDefault(i => i.Id == dto.ItemId);
+                if (item == null)
+                    continue;
+
+                if (dto.Quantity <= 0)
+                    _unitOfWork.Repository<OrderItem, int>().Delete(item);
+                else
+                    item.Quantity = dto.Quantity;
+            }
+
+            // Recalculate subtotal
+            order.Subtotal = order.OrderItems.Sum(i => i.Price * i.Quantity);
+            _unitOfWork.Repository<Order, int>().Update(order);
+            await _unitOfWork.CompleteAsync();
+
+            _logger.LogInformation("Items for order {OrderId} updated by {UserEmail}", orderId, userEmail);
+
+            return response.Success(_mapper.Map<OrderResultDto>(order));
+        }
+
+
+        public async Task<CommonResponse<OrderResultDto>> UpdateOrderStatusAsync(int orderId, OrderStatus newStatus)
+        {
+            var response = new CommonResponse<OrderResultDto>();
+
+            if (orderId <= 0)
+                return response.Fail("400", "Invalid order ID");
+
+            var specs = new OrderSpecificationById(orderId);
+            var order = await _unitOfWork.Repository<Order, int>().GetByIdWithSpecificationAsync(specs);
+
+            if (order == null)
+                return response.Fail("404", "Order not found");
+
+            // Prevent invalid transitions
+            if (order.OrderStatus == OrderStatus.canceled)
+                return response.Fail("400", "Cannot update a canceled order");
+
+            if (order.OrderStatus == OrderStatus.delivered)
+                return response.Fail("400", "Delivered orders cannot be updated");
+
+            // If moving to delivered, ensure delivery is completed
+            var delivery = await _unitOfWork.Repository<Delivery, int>().GetByIdAsync(order.DeliveryId.Value);
+            if (delivery == null)
+                return response.Fail("404", "Associated delivery not found");
+
+            if (newStatus == OrderStatus.delivered && delivery.Status != DeliveryStatus.Delivered)
+                return response.Fail("400", "Delivery must be completed before marking the order as delivered");
+
+            order.OrderStatus = newStatus;
+            _unitOfWork.Repository<Order, int>().Update(order);
+            await _unitOfWork.CompleteAsync();
+
+            _logger.LogInformation("Order {OrderId} status updated to {NewStatus}", orderId, newStatus);
+
+            return response.Success(_mapper.Map<OrderResultDto>(order));
+        }
+
+
+        public async Task<CommonResponse<OrderResultDto>> AddItemToOrderAsync(int orderId, AddOrderItemDto dto, string userEmail)
+        {
+            var response = new CommonResponse<OrderResultDto>();
+
+            if (orderId <= 0)
+                return response.Fail("400", "Invalid order ID");
+
+            if (dto == null || dto.ProductId <= 0 || dto.Quantity <= 0)
+                return response.Fail("400", "Invalid item data");
+
+            var specs = new OrderSpecificationById(orderId);
+            var order = await _unitOfWork.Repository<Order, int>().GetByIdWithSpecificationAsync(specs);
+            if (order == null || order.BuyerEmail != userEmail)
+                return response.Fail("404", "Order not found or access denied");
+
+            var delivery = await _unitOfWork.Repository<Delivery, int>().GetByIdAsync(order.DeliveryId.Value);
+            if (delivery == null)
+                return response.Fail("404", "Associated delivery not found");
+
+            if (delivery.Status != DeliveryStatus.Pending)
+                return response.Fail("400", "Cannot modify order after processing begins.");
+
+            var product = await _unitOfWork.Repository<Product, int>().GetByIdAsync(dto.ProductId);
+            if (product == null)
+                return response.Fail("404", "Product not found");
+
+            var existingItem = order.OrderItems.FirstOrDefault(i => i.ItemOrdered.ProductItemId == dto.ProductId);
+            if (existingItem != null)
+            {
+                existingItem.Quantity += dto.Quantity;
+            }
+            else
+            {
+                var orderItem = new OrderItem
+                {
+                    Price = product.Price,
+                    Quantity = dto.Quantity,
+                    ItemOrdered = new ProductOrdered
+                    {
+                        ProductItemId = product.Id,
+                        ProductName = product.Name
+                    }
+                };
+
+                order.OrderItems.Add(orderItem);
+            }
+
+            order.Subtotal = order.OrderItems.Sum(i => i.Price * i.Quantity);
+            _unitOfWork.Repository<Order, int>().Update(order);
+            await _unitOfWork.CompleteAsync();
+
+            _logger.LogInformation("Item added to order {OrderId} by {UserEmail}", orderId, userEmail);
+
+            return response.Success(_mapper.Map<OrderResultDto>(order));
+        }
+
+
+        public async Task<CommonResponse<OrderResultDto>> RemoveItemFromOrderAsync(int orderId, int itemId, string userEmail)
+        {
+            var response = new CommonResponse<OrderResultDto>();
+
+            if (orderId <= 0 || itemId <= 0)
+                return response.Fail("400", "Invalid input data");
+
+            var specs = new OrderSpecificationById(orderId);
+            var order = await _unitOfWork.Repository<Order, int>().GetByIdWithSpecificationAsync(specs);
+            if (order == null || order.BuyerEmail != userEmail)
+                return response.Fail("404", "Order not found or access denied");
+
+            var delivery = await _unitOfWork.Repository<Delivery, int>().GetByIdAsync(order.DeliveryId.Value);
+            if (delivery == null)
+                return response.Fail("404", "Associated delivery not found");
+
+            if (delivery.Status != DeliveryStatus.Pending)
+                return response.Fail("400", "Cannot modify order after processing begins.");
+
+            var item = order.OrderItems.FirstOrDefault(i => i.Id == itemId);
+            if (item == null)
+                return response.Fail("404", "Order item not found");
+
+            _unitOfWork.Repository<OrderItem, int>().Delete(item);
+            await _unitOfWork.CompleteAsync();
+
+            // Recalculate subtotal
+            order.Subtotal = order.OrderItems.Sum(i => i.Price * i.Quantity);
+            _unitOfWork.Repository<Order, int>().Update(order);
+            await _unitOfWork.CompleteAsync();
+
+            _logger.LogInformation("Item {ItemId} removed from order {OrderId} by {UserEmail}", itemId, orderId, userEmail);
+
+            return response.Success(_mapper.Map<OrderResultDto>(order));
+        }
+
     }
 }

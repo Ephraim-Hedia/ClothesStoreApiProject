@@ -3,7 +3,9 @@
     public enum OrderStatus
     {
         pending,
-        Completed,
+        canceled,
+        delivered,
+        completed,
         failed
     }
     public class Order : BaseEntity<int>

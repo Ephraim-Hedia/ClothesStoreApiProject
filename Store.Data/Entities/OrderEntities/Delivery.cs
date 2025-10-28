@@ -24,5 +24,30 @@
         public string? CourierName { get; set; }
         public string? TrackingNumber { get; set; }
         public string? Notes { get; set; }
+
+
+        
+        // Method to update delivery status
+        public void UpdateStatus(DeliveryStatus newStatus)
+        {
+            // Prevent invalid transitions
+            if (Status == DeliveryStatus.Delivered || Status == DeliveryStatus.Canceled)
+                throw new InvalidOperationException("Cannot update delivery after it's completed or canceled.");
+
+            Status = newStatus;
+        }
+
+        // Method to assign courier info later (optional)
+        public void AssignCourier(string courierName, string trackingNumber)
+        {
+            CourierName = courierName;
+            TrackingNumber = trackingNumber;
+        }
+
+        public void AddNote(string note)
+        {
+            Notes = note;
+        }
     }
+
 }
