@@ -5,6 +5,8 @@ namespace Store.Data.Entities.IdentityEntities
     public class Address : BaseEntity<int>
     {
         public string Street { get; set; }
+        public string? BuildingNumber { get; set; }
+        public string? ApartmentNumber { get; set; }
 
         // Foreign key to City
         public int CityId { get; set; } 

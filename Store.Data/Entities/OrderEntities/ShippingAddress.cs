@@ -5,6 +5,8 @@ namespace Store.Data.Entities.OrderEntities
     public class ShippingAddress : BaseEntity<int>
     {
         public string Street { get; set; }
+        public string? BuildingNumber { get; set; }
+        public string? ApartmentNumber { get; set; }
         public int CityId { get; set; }
         public City City { get; set; }
 

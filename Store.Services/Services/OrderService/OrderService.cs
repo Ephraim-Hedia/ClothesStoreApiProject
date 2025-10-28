@@ -244,7 +244,7 @@ namespace Store.Services.Services.OrderService
         }
 
         // --------------------------
-        // Update Order Items (Before Processing)
+        // Update Order Items Quantity (Before Processing)
         // --------------------------
         public async Task<CommonResponse<OrderResultDto>> UpdateOrderItemsQuantityAsync(int orderId, List<UpdateOrderItemDto> items, string userEmail)
         {
@@ -418,6 +418,60 @@ namespace Store.Services.Services.OrderService
             await _unitOfWork.CompleteAsync();
 
             _logger.LogInformation("Item {ItemId} removed from order {OrderId} by {UserEmail}", itemId, orderId, userEmail);
+
+            return response.Success(_mapper.Map<OrderResultDto>(order));
+        }
+
+
+
+
+        public async Task<CommonResponse<OrderResultDto>> UpdateShippingAddressAsync(
+            int orderId,
+            UpdateShippingAddressDto dto,
+            string userEmail)
+        {
+            var response = new CommonResponse<OrderResultDto>();
+
+            if (orderId <= 0)
+                return response.Fail("400", "Invalid order ID");
+
+            var specs = new OrderSpecificationById(orderId);
+            var order = await _unitOfWork.Repository<Order, int>().GetByIdWithSpecificationAsync(specs);
+
+            if (order == null || order.BuyerEmail != userEmail)
+                return response.Fail("404", "Order not found or access denied");
+
+            var delivery = await _unitOfWork.Repository<Delivery, int>().GetByIdAsync(order.DeliveryId.Value);
+            if (delivery == null)
+                return response.Fail("404", "Associated delivery not found");
+
+            if (delivery.Status != DeliveryStatus.Pending)
+                return response.Fail("400", "Cannot change shipping address after processing begins.");
+
+            var shippingAddress = await _unitOfWork.Repository<ShippingAddress, int>()
+                .GetByIdAsync(delivery.ShippingAddressId);
+            if (shippingAddress == null)
+                return response.Fail("404", "Shipping address not found");
+
+            // Update shipping details
+            shippingAddress.Street = dto.Street;
+            shippingAddress.BuildingNumber = dto.BuildingNumber;
+            shippingAddress.ApartmentNumber = dto.ApartmentNumber;
+
+            // Update city (and refresh delivery info)
+            var city = await _unitOfWork.Repository<City, int>().GetByIdAsync(dto.CityId);
+            if (city == null)
+                return response.Fail("404", "City not found");
+
+            shippingAddress.CityId = city.Id;
+            delivery.DeliveryPrice = city.DeliveryCost;
+            delivery.EstimatedArrivalDate = DateTime.UtcNow.AddDays(city.EstimatedDeliveryDays);
+
+            _unitOfWork.Repository<ShippingAddress, int>().Update(shippingAddress);
+            _unitOfWork.Repository<Delivery, int>().Update(delivery);
+            await _unitOfWork.CompleteAsync();
+
+            _logger.LogInformation("Shipping address updated for order {OrderId} by {UserEmail}", orderId, userEmail);
 
             return response.Success(_mapper.Map<OrderResultDto>(order));
         }

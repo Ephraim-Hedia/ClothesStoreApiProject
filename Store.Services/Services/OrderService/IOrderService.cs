@@ -18,5 +18,6 @@ namespace Store.Services.Services.OrderService
         Task<CommonResponse<OrderResultDto>> AddItemToOrderAsync(int orderId, AddOrderItemDto dto, string userEmail);
         Task<CommonResponse<OrderResultDto>> RemoveItemFromOrderAsync(int orderId, int itemId, string userEmail);
 
+        Task<CommonResponse<OrderResultDto>> UpdateShippingAddressAsync(int orderId, UpdateShippingAddressDto dto, string userEmail);
     }
 }
