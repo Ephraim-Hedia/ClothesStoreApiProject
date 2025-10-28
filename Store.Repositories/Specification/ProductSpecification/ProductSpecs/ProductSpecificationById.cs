@@ -9,6 +9,8 @@ namespace Store.Repositories.Specification.ProductSpecification.ProductSpecs
             : base(product => product.Id == productId)
         {
             AddInclude(p => p.Category);
+
+            AddInclude("Category.Subcategories");
             AddInclude("Category.Discount");
             AddInclude(p => p.Subcategory);
             AddInclude("Subcategory.Discount");

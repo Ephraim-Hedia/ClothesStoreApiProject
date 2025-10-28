@@ -1,13 +1,12 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Store.Data.Entities.ProductEntities;
 using Store.Repositories.Interfaces;
 using Store.Repositories.Specification.ProductSpecification.ProductSpecs;
+using Store.Repositories.Specification.ProductSpecification.SubcategorySpecs;
 using Store.Services.HandleResponse.CommonResponse;
 using Store.Services.Helper.Validation;
 using Store.Services.Services.ProductService.Dtos;
-using Store.Services.Services.SubcategoryService.Dtos;
 
 namespace Store.Services.Services.ProductService
 {
@@ -245,13 +244,34 @@ namespace Store.Services.Services.ProductService
 
             try
             {
-                var product = productResult.Entity;
+                var specs = new ProductSpecificationById(productId);
+                var product = await _unitOfWork.Repository<Product, int>().GetByIdWithSpecificationAsync(specs);
+                
                 // 1) Validate Category
+                if (dto.CategoryId != null && product != null)
+                    product.CategoryId = dto.CategoryId.Value;
                 // 2) Validate Subcategory
+                if (dto.SubcategoryId != null && product != null)
+                {
+                    var subcategorySpecs = new SubcategorySpecificationById(dto.SubcategoryId.Value);
+                    var subcategory = await _unitOfWork.Repository<Subcategory, int>().GetByIdWithSpecificationAsync(subcategorySpecs);
+                    if (subcategory.Category.Id != product.CategoryId)
+                        return response.Fail("400", "Invalid Data, Subcategory Parent Not Match Category Id");
+                    product.SubcategoryId = dto.SubcategoryId.Value;
+                }
                 // 3) Validate discount
-                // 4) Validate Price 
-                if(dto.DiscountId != null && product != null)
+                if (dto.DiscountId != null && product != null)
                     product.DiscountId = dto.DiscountId;
+                // 4) Validate Price 
+                if (dto.Price != null && product != null)
+                    product.Price = dto.Price.Value;
+                // 5) Validate Name 
+                if (!string.IsNullOrEmpty(dto.Name) && product != null)
+                    product.Name = dto.Name;
+                // 6) Validate Description 
+                if (!string.IsNullOrEmpty(dto.Description) && product != null)
+                    product.Description = dto.Description;
+                
 
                 // Update join tables
                 if (dto.ProductColorIds?.Any() == true)
@@ -279,6 +299,9 @@ namespace Store.Services.Services.ProductService
                 _unitOfWork.Repository<Product, int>().Update(product);
                 await _unitOfWork.CompleteAsync();
 
+
+                var specsDb = new ProductSpecificationById(product.Id);
+                var productAfterUpdate = await _unitOfWork.Repository<Product, int>().GetByIdWithSpecificationAsync(specsDb);
                 var mapped = _mapper.Map<ProductResultDto>(product);
                 return response.Success(mapped);
             }

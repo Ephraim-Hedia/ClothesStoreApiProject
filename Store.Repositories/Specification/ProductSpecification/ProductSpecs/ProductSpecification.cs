@@ -14,6 +14,7 @@ namespace Store.Repositories.Specification.ProductSpecification.ProductSpecs
             (!specs.CategoryId.HasValue || product.CategoryId == specs.CategoryId.Value))
         {
             AddInclude(p => p.Category);
+            AddInclude("Category.Subcategories");
             AddInclude("Category.Discount");
             AddInclude(p => p.Subcategory);
             AddInclude("Subcategory.Discount");
