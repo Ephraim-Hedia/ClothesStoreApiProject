@@ -159,7 +159,7 @@ namespace Store.Services.Services.BasketService
         }
         public async Task<CommonResponse<bool>> RemoveItemAsync(string? userId, string? fingerPrint, int itemId)
         {
-            Basket basket = new Basket();
+            Basket basket = new Basket(); 
 
             var response = new CommonResponse<bool>();
             if (itemId <= 0)
