@@ -162,9 +162,18 @@ namespace Store.Services.Services.CategoriesService
                 }
                 if(!string.IsNullOrEmpty(dto.Description))
                     category.Description = dto.Description;
+                if (dto.DiscountId != null && dto.DiscountId > 0)
+                {
+                    var discount = await _unitOfWork.Repository<Discount, int>().GetByIdAsync(dto.DiscountId.Value);
+                    if (discount == null)
+                        return response.Fail("404", "Discount Not Found");
+
+                    category.DiscountId = dto.DiscountId;
+                }
 
                 _unitOfWork.Repository<Category, int>().Update(category);
                 await _unitOfWork.CompleteAsync();
+
                 var mappedCategory = _mapper.Map<CategoryResultDto>(category);
                 return response.Success(mappedCategory);
             }
