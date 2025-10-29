@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Store.Data.Entities.IdentityEntities;
-using Store.Repositories.Interfaces;
 using Store.Services.HandleResponse.CommonResponse;
 using Store.Services.Services.AddressService.Dtos;
 using Store.Services.Services.CityService;
@@ -203,7 +202,14 @@ namespace Store.Services.Services.AddressService
                         return response.Fail("404", $"City not found with Id: {dto.CityId}");
                     address.CityId = dto.CityId.Value;
                 }            
+                if (!string.IsNullOrEmpty(dto.District)) address.District = dto.District;
                 if (!string.IsNullOrEmpty(dto.Street)) address.Street = dto.Street;
+                if (!string.IsNullOrEmpty(dto.ApartmentNumber)) address.ApartmentNumber = dto.ApartmentNumber;
+                if (!string.IsNullOrEmpty(dto.FloorNumber)) address.FloorNumber = dto.FloorNumber;
+                if (!string.IsNullOrEmpty(dto.Landmark)) address.Landmark = dto.Landmark;
+                if (!string.IsNullOrEmpty(dto.RecipientName)) address.RecipientName = dto.RecipientName;
+                if (!string.IsNullOrEmpty(dto.PhoneNumber)) address.PhoneNumber = dto.PhoneNumber;
+                
                 await _userManager.UpdateAsync(user);
 
                 // return response with mapped address

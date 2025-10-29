@@ -10,7 +10,6 @@ namespace Store.Services.Services.OrderService.Dtos
         public DeliveryStatus Status { get; set; }
 
         // Shipping info (snapshot of where to deliver)
-        public int ShippingAddressId { get; set; }
         public ShippingAddressDto ShippingAddress { get; set; }
 
         // Optional fields
