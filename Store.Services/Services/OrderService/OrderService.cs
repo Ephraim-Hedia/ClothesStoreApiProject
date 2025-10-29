@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Store.Data.Entities.BasketEntities;
 using Store.Data.Entities.IdentityEntities;
@@ -8,6 +7,7 @@ using Store.Data.Entities.ProductEntities;
 using Store.Repositories.Interfaces;
 using Store.Repositories.Specification.BasketSpecification.BasketSpecs;
 using Store.Repositories.Specification.OrderSpecification.OrderSpecs;
+using Store.Repositories.Specification.ProductSpecification.ProductSpecs;
 using Store.Services.HandleResponse.CommonResponse;
 using Store.Services.Services.OrderService.Dtos;
 
@@ -282,13 +282,24 @@ namespace Store.Services.Services.OrderService
 
             // Recalculate subtotal
             order.Subtotal = order.OrderItems.Sum(i => i.Price * i.Quantity);
+
+            
             _unitOfWork.Repository<Order, int>().Update(order);
             await _unitOfWork.CompleteAsync();
 
+            if (order.OrderItems.Count() == 0)
+            {
+                order.OrderStatus = OrderStatus.canceled;
+                order.DeliveryMethod.Status = DeliveryStatus.Canceled;
+                _unitOfWork.Repository<Order, int>().Update(order);
+                await _unitOfWork.CompleteAsync();
+
+            }
             _logger.LogInformation("Items for order {OrderId} updated by {UserEmail}", orderId, userEmail);
 
             return response.Success(_mapper.Map<OrderResultDto>(order));
         }
+
 
         public async Task<CommonResponse<OrderResultDto>> UpdateOrderStatusAsync(int orderId, OrderStatus newStatus)
         {
@@ -350,11 +361,30 @@ namespace Store.Services.Services.OrderService
             if (delivery.Status != DeliveryStatus.Pending)
                 return response.Fail("400", "Cannot modify order after processing begins.");
 
-            var product = await _unitOfWork.Repository<Product, int>().GetByIdAsync(dto.ProductId);
+            // To Include color and size
+            var productSpecs = new ProductSpecificationById(dto.ProductId);
+            var product = await _unitOfWork.Repository<Product, int>().GetByIdWithSpecificationAsync(productSpecs);
             if (product == null)
                 return response.Fail("404", "Product not found");
 
-            var existingItem = order.OrderItems.FirstOrDefault(i => i.ItemOrdered.ProductItemId == dto.ProductId);
+            var color = await _unitOfWork.Repository<ProductColor, int>().GetByIdAsync(dto.ColorId);
+            if (color == null)
+                return response.Fail("404", "Color not found");
+
+            var size = await _unitOfWork.Repository<ProductSize, int>().GetByIdAsync(dto.SizeId);
+            if (size == null)
+                return response.Fail("404", "Size not found");
+
+
+            // check about the product and it's size and it's color 
+            // To DO 
+            // Add the Stock Logic to check the availability of the product in the stock
+            var existingItem = order.OrderItems.FirstOrDefault(i => 
+                    (i.ItemOrdered.ProductItemId == dto.ProductId) &&
+                    (i.ItemOrdered.ProductColor == color.ColorName) &&
+                    (i.ItemOrdered.ProductSize == size.Name));
+            
+                   
             if (existingItem != null)
             {
                 existingItem.Quantity += dto.Quantity;
@@ -368,7 +398,9 @@ namespace Store.Services.Services.OrderService
                     ItemOrdered = new ProductOrdered
                     {
                         ProductItemId = product.Id,
-                        ProductName = product.Name
+                        ProductName = product.Name,
+                        ProductColor = color.ColorName,
+                        ProductSize = size.Name
                     }
                 };
 
@@ -413,9 +445,18 @@ namespace Store.Services.Services.OrderService
 
             // Recalculate subtotal
             order.Subtotal = order.OrderItems.Sum(i => i.Price * i.Quantity);
+
             _unitOfWork.Repository<Order, int>().Update(order);
             await _unitOfWork.CompleteAsync();
 
+            if (order.OrderItems.Count() == 0)
+            {
+                order.OrderStatus = OrderStatus.canceled;
+                order.DeliveryMethod.Status = DeliveryStatus.Canceled;
+                _unitOfWork.Repository<Order, int>().Update(order);
+                await _unitOfWork.CompleteAsync();
+
+            }
             _logger.LogInformation("Item {ItemId} removed from order {OrderId} by {UserEmail}", itemId, orderId, userEmail);
 
             return response.Success(_mapper.Map<OrderResultDto>(order));
@@ -443,7 +484,7 @@ namespace Store.Services.Services.OrderService
                 return response.Fail("404", "Associated delivery not found");
 
             if (delivery.Status != DeliveryStatus.Pending)
-                return response.Fail("400", "Cannot change shipping address after processing begins.");
+                return response.Fail("400", "Cannot change shipping address after processing begins. Contact Customer Service");
 
             var shippingAddress = await _unitOfWork.Repository<ShippingAddress, int>()
                 .GetByIdAsync(delivery.ShippingAddressId);
@@ -451,18 +492,25 @@ namespace Store.Services.Services.OrderService
                 return response.Fail("404", "Shipping address not found");
 
             // Update shipping details
-            shippingAddress.Street = dto.Street;
-            shippingAddress.BuildingNumber = dto.BuildingNumber;
-            shippingAddress.ApartmentNumber = dto.ApartmentNumber;
+            if(string.IsNullOrEmpty(shippingAddress.Street)) shippingAddress.Street = dto.Street;
+            if (string.IsNullOrEmpty(shippingAddress.BuildingNumber)) shippingAddress.BuildingNumber = dto.BuildingNumber;
+            if (string.IsNullOrEmpty(shippingAddress.FloorNumber)) shippingAddress.FloorNumber = dto.FloorNumber;
+            if (string.IsNullOrEmpty(shippingAddress.ApartmentNumber)) shippingAddress.ApartmentNumber = dto.ApartmentNumber;
+            if (string.IsNullOrEmpty(shippingAddress.Landmark)) shippingAddress.Landmark = dto.Landmark;
+            if (string.IsNullOrEmpty(shippingAddress.RecipientName)) shippingAddress.RecipientName = dto.RecipientName;
+            if (string.IsNullOrEmpty(shippingAddress.PhoneNumber)) shippingAddress.PhoneNumber = dto.PhoneNumber;
+
 
             // Update city (and refresh delivery info)
-            var city = await _unitOfWork.Repository<City, int>().GetByIdAsync(dto.CityId);
-            if (city == null)
-                return response.Fail("404", "City not found");
-
-            shippingAddress.CityId = city.Id;
-            delivery.DeliveryPrice = city.DeliveryCost;
-            delivery.EstimatedArrivalDate = DateTime.UtcNow.AddDays(city.EstimatedDeliveryDays);
+            if (dto.CityId != null)
+            {
+                var city = await _unitOfWork.Repository<City, int>().GetByIdAsync(dto.CityId.Value);
+                if (city == null)
+                    return response.Fail("404", "City not found");
+                shippingAddress.CityId = city.Id;
+                delivery.DeliveryPrice = city.DeliveryCost;
+                delivery.EstimatedArrivalDate = DateTime.UtcNow.AddDays(city.EstimatedDeliveryDays);
+            }
 
             _unitOfWork.Repository<ShippingAddress, int>().Update(shippingAddress);
             _unitOfWork.Repository<Delivery, int>().Update(delivery);

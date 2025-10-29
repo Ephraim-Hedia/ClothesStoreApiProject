@@ -10,6 +10,9 @@
 
         // More precise breakdown of location
         public string? District { get; set; } // Optional local area within city
-        public int CityId { get; set; }
+        public int? CityId { get; set; }
+
+        public string? RecipientName { get; set; }
+        public string? PhoneNumber { get; set; }
     }
 }
