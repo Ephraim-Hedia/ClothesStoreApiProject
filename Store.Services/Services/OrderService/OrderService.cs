@@ -290,7 +290,6 @@ namespace Store.Services.Services.OrderService
             return response.Success(_mapper.Map<OrderResultDto>(order));
         }
 
-
         public async Task<CommonResponse<OrderResultDto>> UpdateOrderStatusAsync(int orderId, OrderStatus newStatus)
         {
             var response = new CommonResponse<OrderResultDto>();
@@ -423,8 +422,6 @@ namespace Store.Services.Services.OrderService
         }
 
 
-
-
         public async Task<CommonResponse<OrderResultDto>> UpdateShippingAddressAsync(
             int orderId,
             UpdateShippingAddressDto dto,
@@ -477,4 +474,6 @@ namespace Store.Services.Services.OrderService
         }
 
     }
+
+
 }

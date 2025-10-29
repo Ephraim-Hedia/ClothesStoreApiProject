@@ -9,6 +9,8 @@ namespace Store.Services.Services.CityService.Dtos
         {
             CreateMap<CityCreateDto, City>().ReverseMap();
             CreateMap<CityResultDto, City>().ReverseMap();
+            CreateMap<CityDropDownListResultDto, City>().ReverseMap();
+
 
         }
     }

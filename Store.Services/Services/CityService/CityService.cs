@@ -135,5 +135,25 @@ namespace Store.Services.Services.CityService
                 throw;
             }
         }
+
+        public async Task<CommonResponse<IReadOnlyList<CityDropDownListResultDto>>> GetAllCityDropListAsync()
+        {
+            var response = new CommonResponse<IReadOnlyList<CityDropDownListResultDto>>();
+            try
+            {
+                var cities = await _unitOfWork.Repository<City, int>().GetAllAsync();
+                if (cities == null || !cities.Any())
+                    return response.Fail("404", "Not Found Cities");
+
+                var mappedCities = _mapper.Map<IReadOnlyList<CityDropDownListResultDto>>(cities);
+                return response.Success(mappedCities);
+            }
+            catch (Exception err)
+            {
+                _logger.LogError(err.Message);
+                throw;
+            }
+        }
+
     }
 }

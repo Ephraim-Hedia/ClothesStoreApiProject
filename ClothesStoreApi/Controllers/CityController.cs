@@ -28,6 +28,13 @@ namespace Store.Api.Controllers
             return result.IsSuccess ? Ok(result) : NotFound(result);
         }
         [HttpGet]
+        [Route("WithoutPricing")]
+        public async Task<IActionResult> GetAllCitiesWithoutPricing()
+        {
+            var result = await _cityService.GetAllCityDropListAsync();
+            return result.IsSuccess ? Ok(result) : NotFound(result);
+        }
+        [HttpGet]
         [Route("{cityId}")]
         public async Task<IActionResult> GetCityById(int cityId)
         {
